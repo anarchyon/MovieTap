@@ -23,7 +23,8 @@ class VerticalAdapter() : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>()
         return data.keys.size
     }
 
-    inner class BaseViewHolder(private val itemMovieSectionBinding: ItemMovieSectionBinding) : RecyclerView.ViewHolder(itemMovieSectionBinding.root) {
+    inner class BaseViewHolder(private val itemMovieSectionBinding: ItemMovieSectionBinding) :
+        RecyclerView.ViewHolder(itemMovieSectionBinding.root) {
         private lateinit var innerRecyclerView: RecyclerView
         private val innerAdapter = MovieAdapter()
 
