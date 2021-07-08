@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">MovieTap</string>
+    <string name="bottom_navigation_home_title">Главная</string>
+    <string name="bottom_navigation_favorites_title">Мои фильмы</string>
+    <string name="bottom_navigation_customize_list_title">Настроить список</string>
+    <string name="genre_action">Боевик</string>
+    <string name="genre_animation">Анимация</string>
+    <string name="genre_comedy">Комедия</string>
+    <string name="genre_crime">Детектив</string>
+    <string name="genre_drama">Драма</string>
+    <string name="genre_fantasy">Фэнтези</string>
+    <string name="genre_historical">Исторический</string>
+    <string name="genre_horror">Ужасы</string>
+    <string name="genre_romance">Мелодрама</string>
+    <string name="genre_science_fiction">Фантастика</string>
+    <string name="genre_thriller">Триллер</string>
+    <string name="genre_western">Вестерн</string>
+    <string name="genre_other">Прочее</string>
+    <string name="state_top_rated">Популярные</string>
+    <string name="state_premiere">Премьеры</string>
+    <string name="state_coming_soon">Ожидаются</string>
+    <string name="state_other">Фильмы</string>
 </resources>
