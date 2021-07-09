@@ -29,7 +29,7 @@ class VerticalAdapter() : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>()
         private val innerAdapter = MovieAdapter()
 
         fun bind(key: Int) {
-            itemMovieSectionBinding.sectionTitle.text = itemView.context.getString(key)
+            itemMovieSectionBinding.sectionTitleTextView.text = itemView.context.getString(key)
             innerRecyclerView = itemMovieSectionBinding.innerRecyclerView
             innerRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             innerRecyclerView.adapter = innerAdapter
