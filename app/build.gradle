@@ -5,6 +5,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\AnnaPaul\\keystore\\upload-keystore.jks')
+            storePassword 'V4Kdn9TDxpy8'
+            keyPassword 'V4Kdn9TDxpy8'
+            keyAlias 'key_upload'
+        }
+    }
     compileSdkVersion 30
 
     defaultConfig {
@@ -19,8 +27,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
