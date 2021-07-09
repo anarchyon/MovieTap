@@ -30,11 +30,11 @@ class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
         RecyclerView.ViewHolder(itemMovieBinding.root) {
 
         fun bind(movie: MovieEntity) {
-            itemMovieBinding.movieName.text = movie.name
-            itemMovieBinding.movieYear.text = movie.movieYear.toString()
-            itemMovieBinding.movieRate.text = movie.rate
-            itemMovieBinding.movieImage.setImageURI(movie.imageUrl)
-            itemMovieBinding.movieFavoriteToggle.isChecked = movie.isFavorite
+            itemMovieBinding.movieNameTextView.text = movie.name
+            itemMovieBinding.movieYearTextView.text = movie.movieYear.toString()
+            itemMovieBinding.movieRateTextView.text = movie.rate
+            itemMovieBinding.movieImageView.setImageURI(movie.imageUrl)
+            itemMovieBinding.movieFavoriteToggleButton.isChecked = movie.isFavorite
         }
 
     }
