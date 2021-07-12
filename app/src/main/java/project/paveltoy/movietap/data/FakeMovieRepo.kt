@@ -13,22 +13,22 @@ class FakeMovieRepo : MovieRepo {
             MovieEntity.Companion.MovieStates.Premiere.state
         ),
         MovieEntity(
-            "Фильм2", "", "", null, false,
+            "Фильм8", "", "", null, false,
             2021, MovieEntity.Companion.MovieGenres.Comedy.genre,
             MovieEntity.Companion.MovieStates.Premiere.state
         ),
         MovieEntity(
-            "Фильм2", "", "", null, false,
+            "Фильм9", "", "", null, false,
             2021, MovieEntity.Companion.MovieGenres.Comedy.genre,
             MovieEntity.Companion.MovieStates.Premiere.state
         ),
         MovieEntity(
-            "Фильм2", "", "", null, false,
+            "Фильм10", "", "", null, false,
             2021, MovieEntity.Companion.MovieGenres.Comedy.genre,
             MovieEntity.Companion.MovieStates.Premiere.state
         ),
         MovieEntity(
-            "Фильм2", "", "", null, false,
+            "Фильм11", "", "", null, false,
             2021, MovieEntity.Companion.MovieGenres.Comedy.genre,
             MovieEntity.Companion.MovieStates.Premiere.state
         ),

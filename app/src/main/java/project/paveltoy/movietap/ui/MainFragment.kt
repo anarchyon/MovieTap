@@ -1,23 +1,31 @@
 package project.paveltoy.movietap.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import project.paveltoy.movietap.data.FakeMovieRepo
-import project.paveltoy.movietap.data.MoviePreparatory
-import project.paveltoy.movietap.data.VerticalAdapter
+import project.paveltoy.movietap.data.*
 import project.paveltoy.movietap.databinding.FragmentMainBinding
+import project.paveltoy.movietap.viewmodels.MainViewModel
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
     private lateinit var mainRecyclerView: RecyclerView
-    private val sectionAdapter = VerticalAdapter()
+    private lateinit var viewModel: MainViewModel
+    private lateinit var verticalAdapter: VerticalAdapter
     var movieRepo = FakeMovieRepo()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        verticalAdapter = VerticalAdapter(viewModel.clickedMovieLiveData)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,10 +40,10 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mainRecyclerView = binding.movieRecyclerView
         mainRecyclerView.layoutManager = LinearLayoutManager(context)
-        mainRecyclerView.adapter = sectionAdapter
+        mainRecyclerView.adapter = verticalAdapter
         val moviePreparatory = MoviePreparatory(movieRepo.getMovies())
-        sectionAdapter.data = moviePreparatory.getSectionMovies()
-        sectionAdapter.notifyDataSetChanged()
+        verticalAdapter.data = moviePreparatory.getSectionMovies()
+        verticalAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroy() {
