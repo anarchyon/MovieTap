@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
 class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) :
-    RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>(), MovieAdapter.ItemClickListener {
+    RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
     var data: Map<Int, List<MovieEntity>> = HashMap()
     lateinit var movieAdapter: MovieAdapter
 
@@ -23,13 +23,7 @@ class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEnt
         holder.bind(listOfKeys.elementAt(position))
     }
 
-    override fun getItemCount(): Int {
-        return data.keys.size
-    }
-
-    override fun onMovieClick(movie: MovieEntity) {
-        clickedMovieLiveData.value = movie
-    }
+    override fun getItemCount() = data.keys.size
 
     inner class BaseViewHolder(private val itemMovieSectionBinding: ItemMovieSectionBinding) :
         RecyclerView.ViewHolder(itemMovieSectionBinding.root) {
@@ -38,7 +32,7 @@ class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEnt
 
         init {
             movieAdapter = MovieAdapter()
-            movieAdapter.setItemClickListener(this@VerticalAdapter)
+            movieAdapter.setItemClickListener { movie -> clickedMovieLiveData.value = movie }
         }
 
         fun bind(key: Int) {

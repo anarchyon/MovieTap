@@ -3,9 +3,12 @@ package project.paveltoy.movietap.data
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import project.paveltoy.movietap.R
 import project.paveltoy.movietap.databinding.ItemMovieBinding
 
-class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
+class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
     var data: List<MovieEntity> = ArrayList()
     private var itemClickListener : ItemClickListener? = null
 
@@ -27,7 +30,7 @@ class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
         return data.size
     }
 
-    interface ItemClickListener {
+    fun interface ItemClickListener {
         fun onMovieClick(movie: MovieEntity)
     }
 
@@ -50,6 +53,11 @@ class MovieAdapter() : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
         private fun setListener(movie: MovieEntity) {
             itemView.setOnClickListener {
                 itemClickListener?.onMovieClick(movie)
+            }
+            itemMovieBinding.movieFavoriteToggleButton.setOnClickListener {
+                Snackbar.make(itemView.rootView, "isFavorite", BaseTransientBottomBar.LENGTH_LONG)
+                    .setAnchorView(R.id.bottom_navigation)
+                    .show()
             }
         }
 
