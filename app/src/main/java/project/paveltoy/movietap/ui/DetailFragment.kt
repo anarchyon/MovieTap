@@ -43,8 +43,8 @@ class DetailFragment : Fragment() {
         binding.movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenre)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

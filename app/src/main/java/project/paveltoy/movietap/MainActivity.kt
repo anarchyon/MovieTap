@@ -2,8 +2,13 @@ package project.paveltoy.movietap
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ActivityMainBinding
 import project.paveltoy.movietap.ui.DetailFragment
@@ -28,9 +33,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_main, MainFragment())
-            .commit()
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigation.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            run {
+                if (destination.id == R.id.detailFragment) {
+                    binding.bottomNavigation.visibility = View.GONE
+                } else {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                }
+            }
+        }
 
         val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.clickedMovieLiveData.observe(this, observer)

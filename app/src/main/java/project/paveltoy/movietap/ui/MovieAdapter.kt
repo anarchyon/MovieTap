@@ -27,9 +27,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
         holder.bind(data[position])
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+    override fun getItemCount() = data.size
 
     fun interface ItemClickListener {
         fun onMovieClick(movie: MovieEntity)
