@@ -1,10 +1,11 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
 class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) :

@@ -15,8 +15,8 @@ class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private var movie: MovieEntity? = null
-    private val observer = Observer<MovieEntity>{
+    private lateinit var movie: MovieEntity
+    private val observer = Observer<MovieEntity> {
         movie = it
         updateInfo()
     }
@@ -37,12 +37,10 @@ class DetailFragment : Fragment() {
     }
 
     private fun updateInfo() {
-        binding.movieDescriptionDetailFragmentTextView.text = movie?.description
-        binding.movieNameDetailFragmentTextView.text = movie?.name
-        binding.movieYearFragmentDetailTextView.text = movie?.movieYear.toString()
-        if (movie != null) {
-            binding.movieGenreDetailFragmentTextView.text = resources.getString(movie!!.movieGenre)
-        }
+        binding.movieDescriptionDetailFragmentTextView.text = movie.description
+        binding.movieNameDetailFragmentTextView.text = movie.name
+        binding.movieYearFragmentDetailTextView.text = movie.movieYear.toString()
+        binding.movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenre)
     }
 
     override fun onDestroy() {

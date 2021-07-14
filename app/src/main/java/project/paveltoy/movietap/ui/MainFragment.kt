@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import project.paveltoy.movietap.data.*
 import project.paveltoy.movietap.databinding.FragmentMainBinding
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
@@ -19,7 +18,6 @@ class MainFragment : Fragment() {
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var viewModel: MainViewModel
     private lateinit var verticalAdapter: VerticalAdapter
-    var movieRepo = FakeMovieRepo()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,8 +39,7 @@ class MainFragment : Fragment() {
         mainRecyclerView = binding.movieRecyclerView
         mainRecyclerView.layoutManager = LinearLayoutManager(context)
         mainRecyclerView.adapter = verticalAdapter
-        val moviePreparatory = MoviePreparatory(movieRepo.getMovies())
-        verticalAdapter.data = moviePreparatory.getSectionMovies()
+        verticalAdapter.data = viewModel.getMovies()
         verticalAdapter.notifyDataSetChanged()
     }
 

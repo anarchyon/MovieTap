@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.R
+import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieBinding
 
 class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
@@ -55,7 +56,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
                 itemClickListener?.onMovieClick(movie)
             }
             itemMovieBinding.movieFavoriteToggleButton.setOnClickListener {
-                Snackbar.make(itemView.rootView, "isFavorite", BaseTransientBottomBar.LENGTH_LONG)
+                Snackbar.make(itemView.rootView, movie.isFavorite.toString(), BaseTransientBottomBar.LENGTH_LONG)
                     .setAnchorView(R.id.bottom_navigation)
                     .show()
             }

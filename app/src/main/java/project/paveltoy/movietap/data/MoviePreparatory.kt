@@ -1,21 +1,20 @@
 package project.paveltoy.movietap.data
 
-class MoviePreparatory(private val movies: List<MovieEntity>) {
+private fun prepareMoviesMap(movies: List<MovieEntity>): Map<Int, ArrayList<MovieEntity>> {
     val map = hashMapOf<Int, ArrayList<MovieEntity>>()
-
-    private fun prepareMoviesMap() {
-        val keys = MovieEntity.Companion.MovieStates.values()
-        for (key in keys) {
-            map[key.state] = arrayListOf()
-        }
-        for (movie in movies) {
-            map[movie.movieState]!!.add(movie)
-        }
+    val keys = MovieEntity.Companion.MovieStates.values()
+    for (key in keys) {
+        map[key.state] = arrayListOf()
     }
-
-    fun getSectionMovies(): Map<Int, ArrayList<MovieEntity>> {
-        prepareMoviesMap()
-        return map
+    for (movie in movies) {
+        map[movie.movieState]!!.add(movie)
     }
-
+    return map
 }
+
+fun getSectionMovies(movies: List<MovieEntity>): Map<Int, ArrayList<MovieEntity>> {
+    return prepareMoviesMap(movies)
+}
+
+fun getFavoriteMovies(movies: List<MovieEntity>): List<MovieEntity> =
+    movies.filter { it.isFavorite }
