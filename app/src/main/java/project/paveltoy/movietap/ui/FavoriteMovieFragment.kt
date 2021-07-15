@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.FragmentFavoriteMovieBinding
-import project.paveltoy.movietap.databinding.FragmentMainBinding
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
 class FavoriteMovieFragment : Fragment() {
@@ -20,6 +19,7 @@ class FavoriteMovieFragment : Fragment() {
     private lateinit var favoriteRecyclerView: RecyclerView
     private lateinit var adapter: FavoritesAdapter
     private lateinit var viewModel: MainViewModel
+    private lateinit var data: List<MovieEntity>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,11 +38,19 @@ class FavoriteMovieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setObserver()
         favoriteRecyclerView = binding.favoriteRecyclerView
         favoriteRecyclerView.layoutManager = GridLayoutManager(context, 2)
         favoriteRecyclerView.adapter = adapter
-        adapter.data = viewModel.getFavoriteMovies()
+        data = viewModel.getFavoriteMovies()
+        adapter.data = data
         adapter.notifyDataSetChanged()
+    }
+
+    private fun setObserver() {
+        viewModel.clickedMovieLiveData.observe(viewLifecycleOwner, {
+            adapter.data = viewModel.getFavoriteMovies()
+        })
     }
 
     override fun onDestroyView() {
