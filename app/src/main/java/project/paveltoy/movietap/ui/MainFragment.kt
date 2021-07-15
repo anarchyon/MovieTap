@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.FragmentMainBinding
 import project.paveltoy.movietap.viewmodels.MainViewModel
 

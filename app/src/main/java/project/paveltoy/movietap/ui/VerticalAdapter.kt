@@ -32,8 +32,7 @@ class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEnt
         private lateinit var innerRecyclerView: RecyclerView
 
         init {
-            movieAdapter = MovieAdapter()
-            movieAdapter.setItemClickListener { movie -> clickedMovieLiveData.value = movie }
+            movieAdapter = MovieAdapter(clickedMovieLiveData)
         }
 
         fun bind(key: Int) {

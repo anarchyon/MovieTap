@@ -2,6 +2,8 @@ package project.paveltoy.movietap.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -9,13 +11,8 @@ import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieBinding
 
-class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
+class MovieAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
     var data: List<MovieEntity> = ArrayList()
-    private var itemClickListener : ItemClickListener? = null
-
-    fun setItemClickListener(itemClickListener: ItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemMovieBinding =
@@ -29,16 +26,12 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
 
     override fun getItemCount() = data.size
 
-    fun interface ItemClickListener {
-        fun onMovieClick(movie: MovieEntity)
-    }
-
     inner class BaseViewHolder(private val itemMovieBinding: ItemMovieBinding) :
         RecyclerView.ViewHolder(itemMovieBinding.root) {
 
         fun bind(movie: MovieEntity) {
-            setListener(movie)
             bindMovie(movie)
+            setListener(movie)
         }
 
         private fun bindMovie(movie: MovieEntity) {
@@ -51,7 +44,8 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
 
         private fun setListener(movie: MovieEntity) {
             itemView.setOnClickListener {
-                itemClickListener?.onMovieClick(movie)
+                clickedMovieLiveData.value = movie
+                itemView.findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
             }
             itemMovieBinding.movieFavoriteToggleButton.setOnClickListener {
                 Snackbar.make(itemView.rootView, movie.isFavorite.toString(), BaseTransientBottomBar.LENGTH_LONG)

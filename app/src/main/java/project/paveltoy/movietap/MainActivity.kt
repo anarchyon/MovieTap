@@ -17,16 +17,6 @@ import project.paveltoy.movietap.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val observer = Observer<MovieEntity>{
-        showDetail()
-    }
-
-    private fun showDetail() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_main, DetailFragment())
-            .addToBackStack(null)
-            .commit()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +37,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        mainViewModel.clickedMovieLiveData.observe(this, observer)
     }
 }
