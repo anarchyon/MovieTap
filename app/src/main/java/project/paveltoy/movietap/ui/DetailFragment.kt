@@ -37,10 +37,12 @@ class DetailFragment : Fragment() {
     }
 
     private fun updateInfo() {
-        binding.movieDescriptionDetailFragmentTextView.text = movie.description
-        binding.movieNameDetailFragmentTextView.text = movie.name
-        binding.movieYearFragmentDetailTextView.text = movie.movieYear.toString()
-        binding.movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenre)
+        binding.apply {
+            movieDescriptionDetailFragmentTextView.text = movie.description
+            movieNameDetailFragmentTextView.text = movie.name
+            movieYearFragmentDetailTextView.text = movie.movieYear.toString()
+            movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenre)
+        }
     }
 
     override fun onDestroyView() {

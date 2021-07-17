@@ -7,12 +7,6 @@ import project.paveltoy.movietap.data.*
 class MainViewModel : ViewModel() {
     private val movieRepo: MovieRepo = FakeMovieRepo()
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
-    val favoriteMovies = MutableLiveData<List<MovieEntity>>()
-
-    init {
-        favoriteMovies.value = getFavoriteMovies()
-    }
-
 
     fun getMovies(): Map<Int, ArrayList<MovieEntity>> {
         return getSectionMovies(movieRepo.getMovies())
