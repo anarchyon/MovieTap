@@ -20,7 +20,7 @@ data class MovieEntity(
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
         val movie = o as MovieEntity
-        return title.lowercase() == movie.title.lowercase() && release_date == movie.release_date
+        return id == movie.id
     }
 
     override fun hashCode(): Int {
