@@ -39,8 +39,8 @@ class DetailFragment : Fragment() {
     private fun updateInfo() {
         binding.apply {
             movieDescriptionDetailFragmentTextView.text = movie.description
-            movieNameDetailFragmentTextView.text = movie.name
-            movieYearFragmentDetailTextView.text = movie.movieYear.toString()
+            movieNameDetailFragmentTextView.text = movie.title
+            movieYearFragmentDetailTextView.text = movie.release_date
             movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenre)
         }
     }

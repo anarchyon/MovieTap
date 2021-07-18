@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.R
-import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
 import project.paveltoy.movietap.databinding.FragmentMainBinding
 import project.paveltoy.movietap.viewmodels.MainViewModel
@@ -70,7 +68,7 @@ class MainFragment : Fragment() {
     private fun setOnFavoriteChanged() {
         verticalAdapter.onFavoriteChanged = {
             it.isFavorite = !it.isFavorite
-            val text = getTextForIsFavoriteSnackbar(resources, it.name, it.isFavorite)
+            val text = getTextForIsFavoriteSnackbar(resources, it.title, it.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)
                 .show()

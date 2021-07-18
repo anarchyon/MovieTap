@@ -2,7 +2,6 @@ package project.paveltoy.movietap.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieBinding
@@ -34,10 +33,10 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
 
         private fun bindMovie(movie: MovieEntity) {
             itemMovieBinding.apply {
-                movieNameTextView.text = movie.name
-                movieYearTextView.text = movie.movieYear.toString()
-                movieRateTextView.text = movie.rate
-                movieImageView.setImageURI(movie.imageUrl)
+                movieNameTextView.text = movie.title
+                movieYearTextView.text = movie.release_date.toString()
+                movieRateTextView.text = movie.vote_average
+                movieImageView.setImageURI(movie.poster_path)
                 movieFavoriteToggleButton.isChecked = movie.isFavorite
             }
         }
