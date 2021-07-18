@@ -34,8 +34,8 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
         private fun bindMovie(movie: MovieEntity) {
             itemMovieBinding.apply {
                 movieNameTextView.text = movie.title
-                movieYearTextView.text = movie.release_date.toString()
-                movieRateTextView.text = movie.vote_average
+                movieYearTextView.text = movie.release_date
+                movieRateTextView.text = movie.vote_average.toString()
                 movieImageView.setImageURI(movie.poster_path)
                 movieFavoriteToggleButton.isChecked = movie.isFavorite
             }
