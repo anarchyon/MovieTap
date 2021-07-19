@@ -20,4 +20,6 @@
     <string name="state_premiere">Премьеры</string>
     <string name="state_coming_soon">Ожидаются</string>
     <string name="state_other">Фильмы</string>
+    <string name="description_title">Описание фильма</string>
+    <string name="customize_list_text_view">Выберите разделы для отображения</string>
 </resources>

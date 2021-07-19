@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <action
+        android:id="@+id/action_global_placeholder"
+        app:destination="@id/favorite_movie_fragment" />
+    <action
+        android:id="@+id/action_global_placeholder2"
+        app:destination="@id/main_list_customize_fragment" />
+    <fragment
+        android:id="@+id/favorite_movie_fragment"
+        android:name="project.paveltoy.movietap.ui.FavoriteMovieFragment"
+        android:label="FavoriteMovieFragment">
+        <action
+            android:id="@+id/action_favorite_movie_fragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/main_list_customize_fragment"
+        android:name="project.paveltoy.movietap.ui.MainListCustomizeFragment"
+        android:label="MainListCustomizeFragment"/>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="project.paveltoy.movietap.ui.MainFragment"
+        android:label="MainFragment">
+        <action
+            android:id="@+id/action_mainFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="project.paveltoy.movietap.ui.DetailFragment"
+        android:label="DetailFragment" />
+</navigation>

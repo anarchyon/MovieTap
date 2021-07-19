@@ -1,16 +1,21 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
-class VerticalAdapter() : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
+class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) :
+    RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
     var data: Map<Int, List<MovieEntity>> = HashMap()
+    lateinit var movieAdapter: MovieAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        val itemMovieSectionBinding = ItemMovieSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemMovieSectionBinding =
+            ItemMovieSectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return BaseViewHolder(itemMovieSectionBinding)
     }
 
@@ -19,23 +24,26 @@ class VerticalAdapter() : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>()
         holder.bind(listOfKeys.elementAt(position))
     }
 
-    override fun getItemCount(): Int {
-        return data.keys.size
-    }
+    override fun getItemCount() = data.keys.size
 
     inner class BaseViewHolder(private val itemMovieSectionBinding: ItemMovieSectionBinding) :
         RecyclerView.ViewHolder(itemMovieSectionBinding.root) {
+
         private lateinit var innerRecyclerView: RecyclerView
-        private val innerAdapter = MovieAdapter()
+
+        init {
+            movieAdapter = MovieAdapter(clickedMovieLiveData)
+        }
 
         fun bind(key: Int) {
             itemMovieSectionBinding.sectionTitleTextView.text = itemView.context.getString(key)
             innerRecyclerView = itemMovieSectionBinding.innerRecyclerView
-            innerRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            innerRecyclerView.adapter = innerAdapter
+            innerRecyclerView.layoutManager =
+                LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            innerRecyclerView.adapter = movieAdapter
             innerRecyclerView.isNestedScrollingEnabled = false
-            innerAdapter.data = this@VerticalAdapter.data[key]!!
-            innerAdapter.notifyDataSetChanged()
+            movieAdapter.data = this@VerticalAdapter.data[key]!!
+            movieAdapter.notifyDataSetChanged()
         }
     }
 }

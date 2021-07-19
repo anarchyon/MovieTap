@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/bottom_navigation_home"
+        android:id="@+id/mainFragment"
         android:title="@string/bottom_navigation_home_title"
         android:icon="@drawable/ic_home"/>
     <item
-        android:id="@+id/bottom_navigation_favorites"
+        android:id="@+id/favorite_movie_fragment"
         android:title="@string/bottom_navigation_favorites_title"
         android:icon="@drawable/ic_favorite"/>
     <item
-        android:id="@+id/bottom_navigation_customize_list"
+        android:id="@+id/main_list_customize_fragment"
         android:title="@string/bottom_navigation_customize_list_title"
         android:icon="@drawable/ic_filter"/>
 </menu>

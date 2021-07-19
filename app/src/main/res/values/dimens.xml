@@ -5,4 +5,8 @@
     <dimen name="margin_common">8dp</dimen>
     <dimen name="movie_image_container_height">160dp</dimen>
     <dimen name="favorite_star_size">48dp</dimen>
+    <dimen name="movie_poster_width">240dp</dimen>
+    <dimen name="movie_poster_height">320dp</dimen>
+    <dimen name="movie_name_text_size">24sp</dimen>
+    <dimen name="detail_fragment_titles_text_size">20sp</dimen>
 </resources>
