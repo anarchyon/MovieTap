@@ -1,5 +1,7 @@
 package project.paveltoy.movietap.data
 
-class MovieLoader {
-    
+interface MovieLoader {
+    fun loadMovieList()
+    fun loadGenres(loadListener: (String) -> Unit)
+    fun loadSubunits(loadListener: (String) -> Unit)
 }

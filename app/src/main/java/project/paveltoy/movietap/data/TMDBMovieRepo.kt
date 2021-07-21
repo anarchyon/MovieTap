@@ -1,22 +1,28 @@
 package project.paveltoy.movietap.data
 
 class TMDBMovieRepo : MovieRepo {
-    private val movieLoader: MovieLoader? = null
-
+    private val movieLoader = TMDBMovieLoader()
 
     override fun addMovie(movie: MovieEntity) {
-        TODO("Not yet implemented")
+
     }
 
     override fun getMovies(): List<MovieEntity> {
-        TODO("Not yet implemented")
+        return listOf()
     }
 
     override fun updateMovie(movie: MovieEntity) {
-        TODO("Not yet implemented")
+
     }
 
     override fun deleteMovie(movie: MovieEntity) {
-        TODO("Not yet implemented")
+
+    }
+
+    override fun getGenres(loadListener: (String) -> Unit) {
+        movieLoader.loadGenres(loadListener)
+    }
+
+    override fun getSubunits(loadListener: (String) -> Unit) {
     }
 }

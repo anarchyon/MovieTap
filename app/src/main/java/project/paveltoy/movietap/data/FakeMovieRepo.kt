@@ -74,4 +74,12 @@ class FakeMovieRepo : MovieRepo {
     override fun deleteMovie(movie: MovieEntity) {
         movies.remove(movie)
     }
+
+    override fun getGenres(loadListener: (String) -> Unit) {
+
+    }
+
+    override fun getSubunits(loadListener: (String) -> Unit) {
+
+    }
 }

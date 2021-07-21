@@ -5,4 +5,6 @@ interface MovieRepo {
     fun getMovies(): List<MovieEntity>
     fun updateMovie(movie: MovieEntity)
     fun deleteMovie(movie: MovieEntity)
+    fun getGenres(loadListener: (String) -> Unit)
+    fun getSubunits(loadListener: (String) -> Unit)
 }
