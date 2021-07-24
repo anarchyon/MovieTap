@@ -45,7 +45,7 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>()
                 movieImageView.setImageURI(movie.poster_path)
                 movieNameTextView.text = movie.title
                 movieYearTextView.text = movie.release_date
-                movieGenresTextView.text = movie.movieGenre.toString()
+                movieGenresTextView.text = movie.movieGenres.toString()
                 movieRateTextView.text = movie.vote_average.toString()
                 movieFavoriteToggleButton.isChecked = movie.isFavorite
             }

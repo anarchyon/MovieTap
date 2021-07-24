@@ -12,8 +12,8 @@ data class MovieEntity(
     val poster_path: Uri?,
     var isFavorite: Boolean,
     val release_date: String,
-    val description: String,
-    val movieGenre: Int,
+    val overview: String,
+    val movieGenres: List<Int>,
     val movieState: Int,
 ) {
     override fun equals(o: Any?): Boolean {

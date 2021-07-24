@@ -2,9 +2,10 @@ package project.paveltoy.movietap.data
 
 interface MovieRepo {
     fun addMovie(movie: MovieEntity)
-    fun getMovies(): List<MovieEntity>
+    fun getMovies(): Map<String, List<MovieEntity>>
     fun updateMovie(movie: MovieEntity)
     fun deleteMovie(movie: MovieEntity)
-    fun getGenres(loadListener: (String) -> Unit)
-    fun getSubunits(loadListener: (String) -> Unit)
+    fun getGenres()
+    fun getSections()
+    fun setMovieSectionsList()
 }

@@ -1,14 +1,45 @@
 package project.paveltoy.movietap.data
 
+import com.google.gson.Gson
+
 class TMDBMovieRepo : MovieRepo {
     private val movieLoader = TMDBMovieLoader()
+    private var movies: Movies = Movies()
+    private lateinit var movieGenres: MovieGenres
+
+    init {
+        getGenres()
+    }
 
     override fun addMovie(movie: MovieEntity) {
 
     }
 
-    override fun getMovies(): List<MovieEntity> {
-        return listOf()
+    override fun getMovies(): Map<String, List<MovieEntity>> {
+        movies.movieSectionsList?.forEach { s ->
+            if (!movies.movies.containsKey(s)) {
+                val request = TMDBSections.SECTIONS.find { it.section == s }?.request
+                if (request != null) {
+                    movieLoader.loadMovieBySection(s, request, this::movieParse)
+                }
+            }
+        }
+        movies.movieGenresList?.forEach { s ->
+            if (!movies.movies.containsKey(s)) {
+                val id = movieGenres.genres.find { it.name == s }?.id
+                if (id != null) {
+                    movieLoader.loadMovieByGenre(s, id, this::movieParse)
+                }
+            }
+        }
+        return movies.movies
+    }
+
+    private fun movieParse(movieJSON: String, key: String?) {
+        val loadResult: LoadMovieResponse = Gson().fromJson(movieJSON, LoadMovieResponse::class.java)
+        if (key!= null) {
+            movies.movies[key] = loadResult.result
+        }
     }
 
     override fun updateMovie(movie: MovieEntity) {
@@ -19,10 +50,18 @@ class TMDBMovieRepo : MovieRepo {
 
     }
 
-    override fun getGenres(loadListener: (String) -> Unit) {
-        movieLoader.loadGenres(loadListener)
+    override fun getGenres() {
+        movieLoader.loadGenres(this::genresParse)
     }
 
-    override fun getSubunits(loadListener: (String) -> Unit) {
+    private fun genresParse(genresJSON: String, key: String?) {
+        movieGenres = Gson().fromJson(genresJSON, MovieGenres::class.java)
+    }
+
+    override fun getSections() {
+    }
+
+    override fun setMovieSectionsList() {
+
     }
 }
