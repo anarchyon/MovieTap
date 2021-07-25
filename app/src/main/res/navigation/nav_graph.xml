@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/main_fragment">
 
     <action
         android:id="@+id/action_global_placeholder"
@@ -17,22 +17,22 @@
         android:label="FavoriteMovieFragment">
         <action
             android:id="@+id/action_favorite_movie_fragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detail_fragment" />
     </fragment>
     <fragment
         android:id="@+id/main_list_customize_fragment"
         android:name="project.paveltoy.movietap.ui.MainListCustomizeFragment"
         android:label="MainListCustomizeFragment"/>
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/main_fragment"
         android:name="project.paveltoy.movietap.ui.MainFragment"
         android:label="MainFragment">
         <action
             android:id="@+id/action_mainFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detail_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/detailFragment"
+        android:id="@+id/detail_fragment"
         android:name="project.paveltoy.movietap.ui.DetailFragment"
         android:label="DetailFragment" />
 </navigation>

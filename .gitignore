@@ -159,3 +159,5 @@ fabric.properties
 .cxx
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio,java,kotlin
+
+/apikey.properties

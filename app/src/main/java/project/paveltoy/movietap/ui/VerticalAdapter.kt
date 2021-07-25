@@ -9,7 +9,7 @@ import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
 class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
-    var data: Map<Int, List<MovieEntity>> = HashMap()
+    var data: Map<String, List<MovieEntity>> = HashMap()
     lateinit var movieAdapter: MovieAdapter
     lateinit var onItemClick: (movie: MovieEntity) -> Unit
     lateinit var onFavoriteChanged: (movie: MovieEntity) -> Unit
@@ -36,8 +36,8 @@ class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
             movieAdapter = MovieAdapter()
         }
 
-        fun bind(key: Int) {
-            itemMovieSectionBinding.sectionTitleTextView.text = itemView.context.getString(key)
+        fun bind(key: String) {
+            itemMovieSectionBinding.sectionTitleTextView.text = key
             setRecyclerView()
             setAdapter(key)
         }
@@ -50,7 +50,7 @@ class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
             innerRecyclerView.isNestedScrollingEnabled = false
         }
 
-        private fun setAdapter(key: Int) {
+        private fun setAdapter(key: String) {
             movieAdapter.data = this@VerticalAdapter.data[key]!!
             movieAdapter.notifyDataSetChanged()
             movieAdapter.onItemClick = onItemClick

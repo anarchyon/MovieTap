@@ -25,4 +25,9 @@
     <string name="movie_not_favorite">удален из любимых</string>
     <string name="movie_favorite">добавлен в любимые</string>
     <string name="movie">Фильм</string>
+    <string name="subunit_now_playing">Смотрите в кино</string>
+    <string name="subunit_upcoming">Скоро</string>
+    <string name="subunit_top_rated">Наивысший рейтинг</string>
+    <string name="subunit_popular">Популярные</string>
+    <string name="subunit_latest">Последние новинки</string>
 </resources>

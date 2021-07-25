@@ -2,14 +2,8 @@ package project.paveltoy.movietap.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
-import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.MovieEntity
-import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
 import project.paveltoy.movietap.databinding.ItemFavoriteMovieBinding
 
 class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>() {
@@ -48,11 +42,11 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>()
 
         private fun bindMovie(movie: MovieEntity) {
             itemFavoriteMovieBinding.apply {
-                movieImageView.setImageURI(movie.imageUrl)
-                movieNameTextView.text = movie.name
-                movieYearTextView.text = movie.movieYear.toString()
-                movieGenresTextView.text = movie.movieGenre.toString()
-                movieRateTextView.text = movie.rate
+//                movieImageView.setImageURI(movie.poster_path)
+                movieNameTextView.text = movie.title
+                movieYearTextView.text = movie.release_date
+                movieGenresTextView.text = movie.movieGenres.toString()
+                movieRateTextView.text = movie.vote_average.toString()
                 movieFavoriteToggleButton.isChecked = movie.isFavorite
             }
         }

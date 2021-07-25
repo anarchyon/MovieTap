@@ -5,14 +5,22 @@ import androidx.lifecycle.ViewModel
 import project.paveltoy.movietap.data.*
 
 class MainViewModel : ViewModel() {
-    private val movieRepo: MovieRepo = FakeMovieRepo()
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
+    val movieToDisplayPreferences = MutableLiveData<List<String>>()
+    val moviesLiveData = MutableLiveData<Movies>()
+    //    private val movieRepo: MovieRepo = FakeMovieRepo()
+    private val movieRepo: MovieRepo = TMDBMovieRepo(moviesLiveData)
 
-    fun getMovies(): Map<Int, ArrayList<MovieEntity>> {
-        return getSectionMovies(movieRepo.getMovies())
+    fun getMovies(): Map<String, List<MovieEntity>> {
+        return movieRepo.getMovies()
     }
 
     fun getFavoriteMovies(): List<MovieEntity> {
-        return getFavoriteMovies(movieRepo.getMovies())
+//        return getFavoriteMovies(movieRepo.getMovies())
+        return listOf()
+    }
+
+    fun setDefaultSectionsList() {
+        movieRepo.setMovieSectionsList(null)
     }
 }

@@ -5,24 +5,26 @@ import project.paveltoy.movietap.R
 import java.util.*
 
 data class MovieEntity(
-    val name: String,
-    val description: String,
-    val rate: String,
-    val imageUrl: Uri?,
+    val id: Int,
+    val title: String,
+    val vote_average: Double,
+    val vote_count: Int,
+    val poster_path: String,
     var isFavorite: Boolean,
-    val movieYear: Int,
-    val movieGenre: Int,
+    val release_date: String,
+    val overview: String,
+    val movieGenres: List<Int>,
     val movieState: Int,
 ) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
         val movie = o as MovieEntity
-        return name.lowercase() == movie.name.lowercase() && movieYear == movie.movieYear
+        return id == movie.id
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name, movieYear)
+        return Objects.hash(title, release_date)
     }
 
     companion object {

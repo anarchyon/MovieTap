@@ -72,7 +72,7 @@ class FavoriteMovieFragment : Fragment() {
         adapter.onFavoriteChanged = {movie: MovieEntity, index: Int ->
             movie.isFavorite = !movie.isFavorite
             viewModel.clickedMovieLiveData.value = movie
-            val text = getTextForIsFavoriteSnackbar(resources, movie.name, movie.isFavorite)
+            val text = getTextForIsFavoriteSnackbar(resources, movie.title, movie.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)
                 .show()
