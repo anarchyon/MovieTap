@@ -1,8 +1,10 @@
 package project.paveltoy.movietap
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -20,13 +22,23 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+            fillTMDBSections()
+            loadPreferences()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigation.setupWithNavController(navController)
 
@@ -40,9 +52,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        fillTMDBSections()
-        loadPreferences()
+//        requestPermissions(arrayOf(Manifest.permission.INTERNET), 1)
+        requestPermissionLauncher.launch(Manifest.permission.INTERNET)
 
     }
 
