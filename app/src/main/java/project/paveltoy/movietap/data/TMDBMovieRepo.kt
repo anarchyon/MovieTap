@@ -1,8 +1,9 @@
 package project.paveltoy.movietap.data
 
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 
-class TMDBMovieRepo : MovieRepo {
+class TMDBMovieRepo(private val moviesLiveData: MutableLiveData<Movies>) : MovieRepo {
     private val movieLoader = TMDBMovieLoader()
     private var movies: Movies = Movies()
     private lateinit var movieGenres: MovieGenres
@@ -38,7 +39,8 @@ class TMDBMovieRepo : MovieRepo {
     private fun movieParse(movieJSON: String, key: String?) {
         val loadResult: LoadMovieResponse = Gson().fromJson(movieJSON, LoadMovieResponse::class.java)
         if (key!= null) {
-            movies.movies[key] = loadResult.result
+            movies.movies[key] = loadResult.results
+            moviesLiveData.postValue(movies)
         }
     }
 
@@ -61,7 +63,13 @@ class TMDBMovieRepo : MovieRepo {
     override fun getSections() {
     }
 
-    override fun setMovieSectionsList() {
-
+    override fun setMovieSectionsList(prefJSON: String?) {
+        if (prefJSON == null) {
+            movies.movieSectionsList = listOf(
+                TMDBSections.SECTIONS[0].section,
+                TMDBSections.SECTIONS[1].section,
+                TMDBSections.SECTIONS[2].section,
+            )
+        }
     }
 }

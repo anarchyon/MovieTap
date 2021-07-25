@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         if (preferences.contains(MOVIE_LIST_KEY)) {
 
         } else {
-            mainViewModel.setDefaultSectionsList(resources)
+            mainViewModel.setDefaultSectionsList()
         }
     }
 

@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,6 +45,8 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
         setAdapter()
+        viewModel.moviesLiveData.observe(viewLifecycleOwner,
+            { verticalAdapter.notifyDataSetChanged() })
     }
 
     private fun setRecyclerView() {

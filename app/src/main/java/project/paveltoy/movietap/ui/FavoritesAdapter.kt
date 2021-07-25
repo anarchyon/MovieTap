@@ -42,7 +42,7 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>()
 
         private fun bindMovie(movie: MovieEntity) {
             itemFavoriteMovieBinding.apply {
-                movieImageView.setImageURI(movie.poster_path)
+//                movieImageView.setImageURI(movie.poster_path)
                 movieNameTextView.text = movie.title
                 movieYearTextView.text = movie.release_date
                 movieGenresTextView.text = movie.movieGenres.toString()

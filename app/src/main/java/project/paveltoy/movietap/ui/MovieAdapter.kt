@@ -36,7 +36,7 @@ class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
                 movieNameTextView.text = movie.title
                 movieYearTextView.text = movie.release_date
                 movieRateTextView.text = movie.vote_average.toString()
-                movieImageView.setImageURI(movie.poster_path)
+//                movieImageView.setImageURI(movie.poster_path)
                 movieFavoriteToggleButton.isChecked = movie.isFavorite
             }
         }

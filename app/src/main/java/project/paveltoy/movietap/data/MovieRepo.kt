@@ -7,5 +7,5 @@ interface MovieRepo {
     fun deleteMovie(movie: MovieEntity)
     fun getGenres()
     fun getSections()
-    fun setMovieSectionsList()
+    fun setMovieSectionsList(prefs: String?)
 }
