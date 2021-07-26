@@ -1,10 +1,12 @@
 package project.paveltoy.movietap
 
 import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -13,24 +15,25 @@ import project.paveltoy.movietap.data.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     companion object {
         const val PREFERENCES_TAG = "movie_list_preferences"
         const val MOVIE_LIST_KEY = "movie_list_key"
+        const val PERMISSION_REQUEST_INTERNET = 1
     }
 
     lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-            fillTMDBSections()
-            loadPreferences()
-        }
-    }
+//    private val requestPermissionLauncher = registerForActivityResult(
+//        ActivityResultContracts.RequestPermission()
+//    ) { isGranted: Boolean ->
+//        if (isGranted) {
+//            mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+//            fillTMDBSections()
+//            loadPreferences()
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +56,29 @@ class MainActivity : AppCompatActivity() {
         }
 
 //        requestPermissions(arrayOf(Manifest.permission.INTERNET), 1)
-        requestPermissionLauncher.launch(Manifest.permission.INTERNET)
+//        requestPermissionLauncher.launch(Manifest.permission.INTERNET)
 
+        checkInternetPermission()
+    }
+
+    private fun checkInternetPermission() {
+        if (checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+            startLoadData()
+        } else {
+            requestInternetPermission()
+        }
+    }
+
+    private fun startLoadData() {
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        fillTMDBSections()
+        loadPreferences()
+    }
+
+    private fun requestInternetPermission() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.INTERNET)) {
+            requestPermissions(arrayOf(Manifest.permission.INTERNET), PERMISSION_REQUEST_INTERNET)
+        }
     }
 
     private fun loadPreferences() {
@@ -73,5 +97,18 @@ class MainActivity : AppCompatActivity() {
             Section(2, getString(R.string.subunit_top_rated), "/movie/top_rated"),
             Section(3, getString(R.string.subunit_popular), "/movie/popular"),
         )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_INTERNET) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLoadData()
+            }
+        }
     }
 }
