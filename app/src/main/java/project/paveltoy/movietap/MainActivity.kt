@@ -15,31 +15,39 @@ import project.paveltoy.movietap.data.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
-class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
+private const val PREFERENCES_TAG = "movie_list_preferences"
+private const val MOVIE_LIST_KEY = "movie_list_key"
+private const val PERMISSION_REQUEST_INTERNET = 1
 
-    companion object {
-        const val PREFERENCES_TAG = "movie_list_preferences"
-        const val MOVIE_LIST_KEY = "movie_list_key"
-        const val PERMISSION_REQUEST_INTERNET = 1
-    }
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
-//    private val requestPermissionLauncher = registerForActivityResult(
-//        ActivityResultContracts.RequestPermission()
-//    ) { isGranted: Boolean ->
-//        if (isGranted) {
-//            mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-//            fillTMDBSections()
-//            loadPreferences()
-//        }
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        checkInternetPermission()
+    }
+
+    private fun checkInternetPermission() {
+        if (checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+            startLoadData()
+        } else {
+            requestInternetPermission()
+        }
+    }
+
+    private fun startLoadData() {
+        setNavigation()
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        fillTMDBSections()
+        loadPreferences()
+    }
+
+    private fun setNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment
         val navController = navHostFragment.navController
@@ -54,25 +62,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                 }
             }
         }
-
-//        requestPermissions(arrayOf(Manifest.permission.INTERNET), 1)
-//        requestPermissionLauncher.launch(Manifest.permission.INTERNET)
-
-        checkInternetPermission()
-    }
-
-    private fun checkInternetPermission() {
-        if (checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
-            startLoadData()
-        } else {
-            requestInternetPermission()
-        }
-    }
-
-    private fun startLoadData() {
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        fillTMDBSections()
-        loadPreferences()
     }
 
     private fun requestInternetPermission() {

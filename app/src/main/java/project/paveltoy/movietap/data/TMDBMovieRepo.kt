@@ -8,10 +8,6 @@ class TMDBMovieRepo(private val moviesLiveData: MutableLiveData<Movies>) : Movie
     private var movies: Movies = Movies()
     private lateinit var movieGenres: MovieGenres
 
-    init {
-        getGenres()
-    }
-
     override fun addMovie(movie: MovieEntity) {
 
     }

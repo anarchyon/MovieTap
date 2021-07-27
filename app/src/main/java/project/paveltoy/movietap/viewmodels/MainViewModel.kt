@@ -21,6 +21,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun setDefaultSectionsList() {
+        movieRepo.getGenres()
         movieRepo.setMovieSectionsList(null)
     }
 }

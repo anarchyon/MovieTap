@@ -1,5 +1,7 @@
 package project.paveltoy.movietap.data
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import project.paveltoy.movietap.BuildConfig
 import java.io.BufferedReader
@@ -46,6 +48,7 @@ class TMDBMovieLoader : MovieLoader {
     }
 
     private fun loadFrom(key: String?, uri: URL, loadListener: (String, String?) -> Unit) {
+        val handler = Handler(Looper.getMainLooper())
         Thread {
             lateinit var urlConnection: HttpsURLConnection
             try {
@@ -53,7 +56,8 @@ class TMDBMovieLoader : MovieLoader {
                 urlConnection.requestMethod = REQUEST_METHOD_GET
                 urlConnection.readTimeout = 10000
                 val bufferedReader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                loadListener(bufferedReader.readText(), key)
+                val response = bufferedReader.readText()
+                handler.post { loadListener(response, key) }
             } catch (e: Exception) {
                 Log.d("@@@", e.message?:"Все пропало")
             } finally {
