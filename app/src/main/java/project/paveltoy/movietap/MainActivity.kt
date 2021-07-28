@@ -1,6 +1,7 @@
 package project.paveltoy.movietap
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import project.paveltoy.movietap.data.Section
 import project.paveltoy.movietap.data.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
+import project.paveltoy.movietap.service.GenresService
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
 private const val PREFERENCES_TAG = "movie_list_preferences"
@@ -45,6 +47,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         fillTMDBSections()
         loadPreferences()
+        val intent = Intent(this, GenresService::class.java)
+        startService(intent)
     }
 
     private fun setNavigation() {

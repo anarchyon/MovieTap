@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
 import project.paveltoy.movietap.databinding.FragmentMainBinding
+import project.paveltoy.movietap.ui.adapters.VerticalAdapter
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
 class MainFragment : Fragment() {

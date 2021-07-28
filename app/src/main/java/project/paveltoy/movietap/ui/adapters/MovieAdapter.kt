@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.ui
+package project.paveltoy.movietap.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
