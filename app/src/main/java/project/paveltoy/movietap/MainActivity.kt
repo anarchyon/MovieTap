@@ -18,7 +18,6 @@ import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.data.Section
 import project.paveltoy.movietap.data.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
-import project.paveltoy.movietap.receivers.ConnectivityBroadcastReceiver
 import project.paveltoy.movietap.service.MovieChangesService
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
-    private val connectReceiver = ConnectivityBroadcastReceiver()
     private val changesMovieReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             val response = p1?.getStringExtra(MovieChangesService.ACTION_TAG)
@@ -40,8 +38,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun processChangesMovieIntent(response: String?) {
-        Snackbar.make(binding.fragmentContainerMain, R.string.changes_movie_found, Snackbar.LENGTH_LONG)
-            .show()
+        Snackbar.make(
+            binding.fragmentContainerMain,
+            R.string.changes_movie_found, Snackbar.LENGTH_LONG
+        ).setAnchorView(binding.bottomNavigation).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

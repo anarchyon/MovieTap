@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import project.paveltoy.movietap.data.TMDBMovieLoader
 import java.io.BufferedReader
@@ -12,7 +13,7 @@ import java.io.InputStreamReader
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-private const val REQUEST_MOVIE_CHANGE_LIST = "/movie/changes"
+private const val REQUEST_MOVIE_CHANGES_LIST = "/movie/changes"
 
 class MovieChangesService : Service() {
 
@@ -21,15 +22,21 @@ class MovieChangesService : Service() {
         const val ACTION_TAG = "project.paveltoy.movietap.changes_movie_tag"
     }
 
+    override fun onCreate() {
+        Log.d("@@@", "$ACTION сервис onCreate")
+        super.onCreate()
+    }
+
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        loadGenres()
+        Log.d("@@@", "$ACTION сервис onStartCommand")
+        loadMovieChangesList()
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun loadGenres() {
-        val uri = URL("${TMDBMovieLoader.URL_MAIN}$REQUEST_MOVIE_CHANGE_LIST${TMDBMovieLoader.URL_API_KEY}")
+    private fun loadMovieChangesList() {
+        val uri = URL("${TMDBMovieLoader.URL_MAIN}$REQUEST_MOVIE_CHANGES_LIST${TMDBMovieLoader.URL_API_KEY}")
         val handler = Handler(Looper.getMainLooper())
         Thread {
             lateinit var connection: HttpsURLConnection
