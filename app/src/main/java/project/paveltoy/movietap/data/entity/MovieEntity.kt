@@ -1,7 +1,5 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.entity
 
-import android.net.Uri
-import project.paveltoy.movietap.R
 import java.util.*
 
 data class MovieEntity(

@@ -1,13 +1,13 @@
-package project.paveltoy.movietap.ui.adapters
+package project.paveltoy.movietap.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import project.paveltoy.movietap.data.MovieEntity
+import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
-class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
+class MovieSectionsAdapter : RecyclerView.Adapter<MovieSectionsAdapter.BaseViewHolder>() {
     var data: Map<String, List<MovieEntity>> = HashMap()
     lateinit var movieAdapter: MovieAdapter
     lateinit var onItemClick: (movie: MovieEntity) -> Unit
@@ -50,7 +50,7 @@ class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
         }
 
         private fun setAdapter(key: String) {
-            movieAdapter.data = this@VerticalAdapter.data[key]!!
+            movieAdapter.data = this@MovieSectionsAdapter.data[key]!!
             movieAdapter.notifyDataSetChanged()
             movieAdapter.onItemClick = onItemClick
             movieAdapter.onFavoriteChanged = onFavoriteChanged

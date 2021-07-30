@@ -7,7 +7,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import project.paveltoy.movietap.data.TMDBMovieLoader
+import project.paveltoy.movietap.data.loader.TMDBMovieLoader
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL

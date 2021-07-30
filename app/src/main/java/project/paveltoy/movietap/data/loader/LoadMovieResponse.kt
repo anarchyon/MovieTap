@@ -1,4 +1,6 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.loader
+
+import project.paveltoy.movietap.data.entity.MovieEntity
 
 data class LoadMovieResponse(
     val page: Int,

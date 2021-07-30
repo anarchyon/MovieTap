@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.loader
 
 import android.os.Handler
 import android.os.Looper
@@ -9,7 +9,6 @@ import java.io.InputStreamReader
 import java.net.URL
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
-import kotlin.reflect.KFunction2
 
 class TMDBMovieLoader : MovieLoader {
     companion object {

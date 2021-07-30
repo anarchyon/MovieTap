@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.ui
+package project.paveltoy.movietap.ui.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import project.paveltoy.movietap.data.MovieEntity
+import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.databinding.FragmentDetailBinding
-import project.paveltoy.movietap.viewmodels.MainViewModel
+import project.paveltoy.movietap.ui.MainViewModel
 
 class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null

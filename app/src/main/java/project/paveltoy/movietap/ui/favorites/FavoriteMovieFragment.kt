@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.ui
+package project.paveltoy.movietap.ui.favorites
 
 import android.content.Context
 import android.os.Bundle
@@ -8,27 +8,28 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.R
+import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
-import project.paveltoy.movietap.databinding.FragmentMainBinding
-import project.paveltoy.movietap.ui.adapters.VerticalAdapter
-import project.paveltoy.movietap.viewmodels.MainViewModel
+import project.paveltoy.movietap.databinding.FragmentFavoriteMovieBinding
+import project.paveltoy.movietap.ui.MainViewModel
 
-class MainFragment : Fragment() {
-    private var _binding: FragmentMainBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var mainRecyclerView: RecyclerView
+class FavoriteMovieFragment : Fragment() {
+    private var _binding: FragmentFavoriteMovieBinding? = null
+    val binding get() = _binding!!
+    private lateinit var favoriteRecyclerView: RecyclerView
+    private lateinit var adapter: FavoritesAdapter
     private lateinit var viewModel: MainViewModel
-    private lateinit var verticalAdapter: VerticalAdapter
+    private lateinit var data: List<MovieEntity>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        verticalAdapter = VerticalAdapter()
+        adapter = FavoritesAdapter()
     }
 
     override fun onCreateView(
@@ -36,45 +37,47 @@ class MainFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoriteMovieBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setRecyclerView()
+        serRecyclerView()
         setAdapter()
-        viewModel.moviesLiveData.observe(viewLifecycleOwner,
-            { verticalAdapter.notifyDataSetChanged() })
     }
 
-    private fun setRecyclerView() {
-        mainRecyclerView = binding.verticalRecyclerView
-        mainRecyclerView.layoutManager = LinearLayoutManager(context)
-        mainRecyclerView.adapter = verticalAdapter
+    private fun serRecyclerView() {
+        favoriteRecyclerView = binding.favoriteRecyclerView
+        favoriteRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        favoriteRecyclerView.adapter = adapter
     }
 
     private fun setAdapter() {
-        verticalAdapter.data = viewModel.getMovies()
-        verticalAdapter.notifyDataSetChanged()
+        data = viewModel.getFavoriteMovies()
         setOnItemClickListener()
         setOnFavoriteChanged()
+        adapter.data = data
+        adapter.notifyDataSetChanged()
     }
 
     private fun setOnItemClickListener() {
-        verticalAdapter.onItemClick = {
+        adapter.onItemClick = {
             viewModel.clickedMovieLiveData.value = it
-            findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
+            findNavController().navigate(R.id.action_favorite_movie_fragment_to_detailFragment)
         }
     }
 
     private fun setOnFavoriteChanged() {
-        verticalAdapter.onFavoriteChanged = {
-            it.isFavorite = !it.isFavorite
-            val text = getTextForIsFavoriteSnackbar(resources, it.title, it.isFavorite)
+        adapter.onFavoriteChanged = { movie: MovieEntity, index: Int ->
+            movie.isFavorite = !movie.isFavorite
+            viewModel.clickedMovieLiveData.value = movie
+            val text = getTextForIsFavoriteSnackbar(resources, movie.title, movie.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)
                 .show()
+            adapter.data = viewModel.getFavoriteMovies()
+            adapter.notifyItemRemoved(index)
         }
     }
 

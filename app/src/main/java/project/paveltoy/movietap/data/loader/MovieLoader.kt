@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.loader
 
 import kotlin.reflect.KFunction2
 

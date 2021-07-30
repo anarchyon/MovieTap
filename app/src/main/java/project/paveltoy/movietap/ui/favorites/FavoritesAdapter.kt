@@ -1,9 +1,9 @@
-package project.paveltoy.movietap.ui.adapters
+package project.paveltoy.movietap.ui.favorites
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import project.paveltoy.movietap.data.MovieEntity
+import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.databinding.ItemFavoriteMovieBinding
 
 class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>() {

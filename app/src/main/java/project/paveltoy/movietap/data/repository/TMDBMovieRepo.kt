@@ -1,7 +1,13 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import project.paveltoy.movietap.data.entity.MovieEntity
+import project.paveltoy.movietap.data.entity.MovieGenres
+import project.paveltoy.movietap.data.entity.Movies
+import project.paveltoy.movietap.data.entity.TMDBSections
+import project.paveltoy.movietap.data.loader.LoadMovieResponse
+import project.paveltoy.movietap.data.loader.TMDBMovieLoader
 
 class TMDBMovieRepo(private val moviesLiveData: MutableLiveData<Movies>) : MovieRepo {
     private val movieLoader = TMDBMovieLoader()

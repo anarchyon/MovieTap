@@ -1,6 +1,4 @@
-package project.paveltoy.movietap.data
-
-import project.paveltoy.movietap.R
+package project.paveltoy.movietap.data.entity
 
 object TMDBSections : Sections {
     lateinit var SECTIONS: List<Section>

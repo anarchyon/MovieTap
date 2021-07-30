@@ -1,4 +1,6 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.repository
+
+import project.paveltoy.movietap.data.entity.MovieEntity
 
 interface MovieRepo {
     fun addMovie(movie: MovieEntity)

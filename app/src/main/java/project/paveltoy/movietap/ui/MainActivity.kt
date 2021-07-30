@@ -1,4 +1,4 @@
-package project.paveltoy.movietap
+package project.paveltoy.movietap.ui
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -15,11 +15,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
-import project.paveltoy.movietap.data.Section
-import project.paveltoy.movietap.data.TMDBSections
+import project.paveltoy.movietap.R
+import project.paveltoy.movietap.data.entity.Section
+import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
 import project.paveltoy.movietap.service.MovieChangesService
-import project.paveltoy.movietap.viewmodels.MainViewModel
 
 private const val PREFERENCES_TAG = "movie_list_preferences"
 private const val MOVIE_LIST_KEY = "movie_list_key"

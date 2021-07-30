@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.entity
 
 class Movies {
     val sections: Sections = TMDBSections

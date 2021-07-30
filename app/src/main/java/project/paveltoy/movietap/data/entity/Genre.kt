@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.data
+package project.paveltoy.movietap.data.entity
 
 data class Genre(
     val id: Int,
