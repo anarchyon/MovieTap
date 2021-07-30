@@ -1,18 +1,24 @@
 package project.paveltoy.movietap
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.data.Section
 import project.paveltoy.movietap.data.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
+import project.paveltoy.movietap.service.MovieChangesService
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
 private const val PREFERENCES_TAG = "movie_list_preferences"
@@ -23,17 +29,36 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
+    private val changesMovieReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            val response = p1?.getStringExtra(MovieChangesService.ACTION_TAG)
+            processChangesMovieIntent(response)
+        }
+
+    }
+
+    private fun processChangesMovieIntent(response: String?) {
+        Snackbar.make(
+            binding.fragmentContainerMain,
+            R.string.changes_movie_found, Snackbar.LENGTH_LONG
+        ).setAnchorView(binding.bottomNavigation).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(changesMovieReceiver, IntentFilter(MovieChangesService.ACTION))
+
         checkInternetPermission()
     }
 
     private fun checkInternetPermission() {
-        if (checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.INTERNET)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             startLoadData()
         } else {
             requestInternetPermission()
@@ -45,6 +70,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         fillTMDBSections()
         loadPreferences()
+        val intent = Intent(this, MovieChangesService::class.java)
+        startService(intent)
     }
 
     private fun setNavigation() {
@@ -99,5 +126,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                 startLoadData()
             }
         }
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(changesMovieReceiver)
+        super.onDestroy()
     }
 }

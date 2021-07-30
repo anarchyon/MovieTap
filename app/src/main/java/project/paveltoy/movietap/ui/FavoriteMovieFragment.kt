@@ -16,6 +16,7 @@ import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
 import project.paveltoy.movietap.databinding.FragmentFavoriteMovieBinding
+import project.paveltoy.movietap.ui.adapters.FavoritesAdapter
 import project.paveltoy.movietap.viewmodels.MainViewModel
 
 class FavoriteMovieFragment : Fragment() {
