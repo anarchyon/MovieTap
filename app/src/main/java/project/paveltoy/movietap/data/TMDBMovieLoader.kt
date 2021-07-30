@@ -22,6 +22,7 @@ class TMDBMovieLoader : MovieLoader {
         const val URL_API_KEY = "?api_key=${BuildConfig.TMDB_API_KEY}"
         const val URL_LANGUAGE = "&language="
         const val URL_REGION = "&region="
+        const val READ_TIMEOUT = 10_000
     }
 
     override fun loadMovieBySection(
@@ -54,7 +55,7 @@ class TMDBMovieLoader : MovieLoader {
             try {
                 urlConnection = uri.openConnection() as HttpsURLConnection
                 urlConnection.requestMethod = REQUEST_METHOD_GET
-                urlConnection.readTimeout = 10000
+                urlConnection.readTimeout = READ_TIMEOUT
                 val bufferedReader = BufferedReader(InputStreamReader(urlConnection.inputStream))
                 val response = bufferedReader.readText()
                 handler.post { loadListener(response, key) }
