@@ -36,7 +36,7 @@ class MovieChangesService : Service() {
     }
 
     private fun loadMovieChangesList() {
-        val uri = URL("${TMDBMovieLoader.URL_MAIN}$REQUEST_MOVIE_CHANGES_LIST${TMDBMovieLoader.URL_API_KEY}")
+        val uri = URL("${TMDBMovieLoader.URL_MAIN}$REQUEST_MOVIE_CHANGES_LIST${TMDBMovieLoader.API_KEY}")
         val handler = Handler(Looper.getMainLooper())
         Thread {
             lateinit var connection: HttpsURLConnection
