@@ -10,10 +10,10 @@ import project.paveltoy.movietap.data.repository.TMDBMovieRepo
 class MainViewModel : ViewModel() {
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
     val movieToDisplayPreferences = MutableLiveData<List<String>>()
+    val liveDataSectionList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
     val moviesLiveData = MutableLiveData<Movies>()
     //    private val movieRepo: MovieRepo = FakeMovieRepo()
-    private val movieRepo: MovieRepo = TMDBMovieRepo(moviesLiveData)
-    val liveDataSectionList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
+    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionList)
 
     fun getMovieSections(): List<String> {
         return movieRepo.getMovieSections()

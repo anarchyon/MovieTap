@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         fillTMDBSections()
         loadPreferences()
-        val intent = Intent(this, MovieChangesService::class.java)
-        startService(intent)
+//        val intent = Intent(this, MovieChangesService::class.java)
+//        startService(intent)
     }
 
     private fun setNavigation() {
@@ -108,10 +108,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     private fun fillTMDBSections() {
         TMDBSections.SECTIONS = listOf(
-            Section(0, getString(R.string.subunit_now_playing), "/movie/now_playing"),
-            Section(1, getString(R.string.subunit_upcoming), "/movie/upcoming"),
-            Section(2, getString(R.string.subunit_top_rated), "/movie/top_rated"),
-            Section(3, getString(R.string.subunit_popular), "/movie/popular"),
+            Section(0, getString(R.string.subunit_now_playing), "movie/now_playing"),
+            Section(1, getString(R.string.subunit_upcoming), "movie/upcoming"),
+            Section(2, getString(R.string.subunit_top_rated), "movie/top_rated"),
+            Section(3, getString(R.string.subunit_popular), "movie/popular"),
         )
     }
 

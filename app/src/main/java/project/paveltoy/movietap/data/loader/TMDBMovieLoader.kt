@@ -17,7 +17,7 @@ import javax.net.ssl.HttpsURLConnection
 class TMDBMovieLoader : RetrofitMovieLoader {
     companion object {
         const val REQUEST_METHOD_GET = "GET"
-        const val URL_MAIN = "https://api.themoviedb.org/3"
+        const val URL_MAIN = "https://api.themoviedb.org/3/"
         const val API_KEY = BuildConfig.TMDB_API_KEY
         const val READ_TIMEOUT = 10_000
     }

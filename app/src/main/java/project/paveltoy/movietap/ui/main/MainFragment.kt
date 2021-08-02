@@ -27,7 +27,7 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        movieSectionsAdapter = MovieSectionsAdapter()
+        movieSectionsAdapter = MovieSectionsAdapter(viewModel.liveDataSectionList)
     }
 
     override fun onCreateView(
@@ -43,8 +43,8 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
         setAdapter()
-        viewModel.moviesLiveData.observe(viewLifecycleOwner,
-            { movieSectionsAdapter.notifyDataSetChanged() })
+//        viewModel.moviesLiveData.observe(viewLifecycleOwner,
+//            { movieSectionsAdapter.notifyDataSetChanged() })
     }
 
     private fun setRecyclerView() {
@@ -54,8 +54,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setAdapter() {
-//        movieSectionsAdapter.data = viewModel.getMovies()
-        movieSectionsAdapter.data = viewModel.getMovieSections()
+        movieSectionsAdapter.data = viewModel.getMovies()
         movieSectionsAdapter.notifyDataSetChanged()
         setOnItemClickListener()
         setOnFavoriteChanged()
