@@ -54,7 +54,8 @@ class MainFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        movieSectionsAdapter.data = viewModel.getMovies()
+//        movieSectionsAdapter.data = viewModel.getMovies()
+        movieSectionsAdapter.data = viewModel.getMovieSections()
         movieSectionsAdapter.notifyDataSetChanged()
         setOnItemClickListener()
         setOnFavoriteChanged()

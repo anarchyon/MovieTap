@@ -20,8 +20,8 @@ class MovieSectionsAdapter : RecyclerView.Adapter<MovieSectionsAdapter.BaseViewH
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        val listOfKeys = data.keys
-        holder.bind(listOfKeys.elementAt(position))
+        val keys = data.keys
+        holder.bind(keys.elementAt(position))
     }
 
     override fun getItemCount() = data.keys.size

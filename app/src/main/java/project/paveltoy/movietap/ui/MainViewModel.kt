@@ -13,6 +13,11 @@ class MainViewModel : ViewModel() {
     val moviesLiveData = MutableLiveData<Movies>()
     //    private val movieRepo: MovieRepo = FakeMovieRepo()
     private val movieRepo: MovieRepo = TMDBMovieRepo(moviesLiveData)
+    val liveDataSectionList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
+
+    fun getMovieSections(): List<String> {
+        return movieRepo.getMovieSections()
+    }
 
     fun getMovies(): Map<String, List<MovieEntity>> {
         return movieRepo.getMovies()
@@ -26,5 +31,13 @@ class MainViewModel : ViewModel() {
     fun setDefaultSectionsList() {
         movieRepo.getGenres()
         movieRepo.setMovieSectionsList(null)
+        setLiveDataSectionList()
+    }
+
+    private fun setLiveDataSectionList() {
+        movieRepo.getMovieSections().forEach {
+            val liveData = MutableLiveData<List<MovieEntity>>()
+            liveDataSectionList[it] = liveData
+        }
     }
 }
