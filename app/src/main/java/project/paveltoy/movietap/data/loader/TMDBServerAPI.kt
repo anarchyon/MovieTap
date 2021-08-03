@@ -8,9 +8,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
-const val GET_MOVIES = "/movie/{section}"
-const val GET_MOVIES_BY_GENRE = "/discover/movie"
-const val GET_GENRES = "/genre/movie/list"
+const val GET_MOVIES = "movie/{section}"
+const val GET_MOVIES_BY_GENRE = "discover/movie"
+const val GET_GENRES = "genre/movie/list"
 const val API_KEY = "api_key"
 const val LANGUAGE = "language"
 const val REGION = "region"

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,11 +24,11 @@ class MainFragment : Fragment() {
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var viewModel: MainViewModel
     private lateinit var movieSectionsAdapter: MovieSectionsAdapter
+    private var movieAdapters = hashMapOf<String, MovieAdapter>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        movieSectionsAdapter = MovieSectionsAdapter(viewModel.liveDataSectionList)
     }
 
     override fun onCreateView(
@@ -43,21 +44,33 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
         setAdapter()
-//        viewModel.moviesLiveData.observe(viewLifecycleOwner,
-//            { movieSectionsAdapter.notifyDataSetChanged() })
     }
 
     private fun setRecyclerView() {
         mainRecyclerView = binding.verticalRecyclerView
         mainRecyclerView.layoutManager = LinearLayoutManager(context)
-        mainRecyclerView.adapter = movieSectionsAdapter
     }
 
     private fun setAdapter() {
-        movieSectionsAdapter.data = viewModel.getMovies()
+        val movies = viewModel.getMovies()
+        setMovieAdapters(movies.keys)
+        movieSectionsAdapter = MovieSectionsAdapter(movieAdapters)
+        mainRecyclerView.adapter = movieSectionsAdapter
+        movieSectionsAdapter.data = movies
         movieSectionsAdapter.notifyDataSetChanged()
         setOnItemClickListener()
         setOnFavoriteChanged()
+    }
+
+    private fun setMovieAdapters(keys: Set<String>) {
+        keys.forEach { key ->
+            val movieAdapter = MovieAdapter()
+            viewModel.liveDataSectionList[key]?.observe(viewLifecycleOwner) {
+                movieAdapter.data = it
+                movieAdapter.notifyDataSetChanged()
+            }
+            movieAdapters[key] = movieAdapter
+        }
     }
 
     private fun setOnItemClickListener() {
@@ -65,6 +78,8 @@ class MainFragment : Fragment() {
             viewModel.clickedMovieLiveData.value = it
             findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
         }
+
+        movieSectionsAdapter.liveDataObserver = { lifecycle }
     }
 
     private fun setOnFavoriteChanged() {
