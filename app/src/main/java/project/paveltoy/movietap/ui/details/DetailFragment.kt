@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.squareup.picasso.Picasso
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.databinding.FragmentDetailBinding
 import project.paveltoy.movietap.ui.MainViewModel
@@ -41,6 +42,7 @@ class DetailFragment : Fragment() {
             movieDescriptionDetailFragmentTextView.text = movie.overview
             movieNameDetailFragmentTextView.text = movie.title
             movieYearFragmentDetailTextView.text = movie.release_date
+            Picasso.get().load(movie.poster_path).into(moviePosterDetailFragmentImageView)
 //            movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenres)
         }
     }

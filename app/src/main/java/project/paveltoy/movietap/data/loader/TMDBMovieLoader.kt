@@ -18,6 +18,9 @@ class TMDBMovieLoader : RetrofitMovieLoader {
     companion object {
         const val REQUEST_METHOD_GET = "GET"
         const val URL_MAIN = "https://api.themoviedb.org/3/"
+        const val IMAGE_SECURE_BASE_URL = "https://image.tmdb.org/t/p/"
+        const val IMAGE_LOGO_SIZE = "w300/"
+        const val IMAGE_ORIGINAL_SIZE = "original"
         const val API_KEY = BuildConfig.TMDB_API_KEY
         const val READ_TIMEOUT = 10_000
     }
@@ -39,9 +42,6 @@ class TMDBMovieLoader : RetrofitMovieLoader {
             Locale.getDefault().country,
             1
         ).enqueue(callback)
-//        val uri =
-//            URL("$URL_MAIN$request${this@Companion.API_KEY}$URL_LANGUAGE${Locale.getDefault()}$URL_REGION${Locale.getDefault().country}")
-//        loadFrom(key, uri, loadListener)
     }
 
     override fun loadMovieByGenre(
@@ -56,9 +56,6 @@ class TMDBMovieLoader : RetrofitMovieLoader {
             1,
             genreId
         ).enqueue(callback)
-//        val uri =
-//            URL("$URL_MAIN$URL_REQUEST_MOVIES_BY${this@Companion.API_KEY}$URL_LANGUAGE${Locale.getDefault()}$URL_REGION${Locale.getDefault().country}$URL_GENRE$genreId")
-//        loadFrom(key, uri, loadListener)
     }
 
     override fun loadGenres(callback: Callback<MovieGenres>) {
@@ -66,27 +63,9 @@ class TMDBMovieLoader : RetrofitMovieLoader {
             API_KEY,
             Locale.getDefault().toLanguageTag()
         ).enqueue(callback)
-//        val uri =
-//            URL("$URL_MAIN$URL_REQUEST_GENRES${this@Companion.API_KEY}$URL_LANGUAGE${Locale.getDefault()}")
-//        loadFrom(null, uri, loadListener)
     }
 
-    private fun loadFrom(key: String?, uri: URL, loadListener: (String, String?) -> Unit) {
-        val handler = Handler(Looper.getMainLooper())
-        Thread {
-            lateinit var urlConnection: HttpsURLConnection
-            try {
-                urlConnection = uri.openConnection() as HttpsURLConnection
-                urlConnection.requestMethod = REQUEST_METHOD_GET
-                urlConnection.readTimeout = READ_TIMEOUT
-                val bufferedReader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                val response = bufferedReader.readText()
-                handler.post { loadListener(response, key) }
-            } catch (e: Exception) {
-                Log.d("@@@", e.message ?: "Все пропало")
-            } finally {
-                urlConnection.disconnect()
-            }
-        }.start()
+    fun completePosterPath(posterPath: String): String {
+        return "$IMAGE_SECURE_BASE_URL$IMAGE_LOGO_SIZE$posterPath?api_key=$API_KEY"
     }
 }

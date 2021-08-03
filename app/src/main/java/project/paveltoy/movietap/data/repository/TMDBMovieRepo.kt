@@ -2,7 +2,6 @@ package project.paveltoy.movietap.data.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.MovieGenres
 import project.paveltoy.movietap.data.entity.Movies
@@ -17,7 +16,6 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
     private var movies: Movies = Movies()
-    private lateinit var movieGenres: MovieGenres
 
     override fun getMovieSections(): List<String> {
         return movies.movieSectionsList.toList().plus(movies.movieGenresList)
@@ -25,7 +23,7 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
 
     override fun getMovies(): Map<String, List<MovieEntity>> {
         movies.movieSectionsList.forEach { s ->
-            if (movies.movies.containsKey(s)) {
+            if (movies.movieSet.containsKey(s)) {
                 val request = TMDBSections.SECTIONS.find { it.section == s }?.request
                 if (request != null) {
                     movieLoader.loadMovieBySection(
@@ -38,8 +36,11 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
                             ) {
                                 val result: LoadMovieResponse? = response.body()
                                 if (response.isSuccessful && result != null) {
-                                    movies.movies[s] = result.results
-                                    liveDataSectionList[s]?.value = movies.movies[s]
+                                    movies.movieSet[s] = result.results
+                                    movies.movieSet[s]?.forEach {
+                                        it.poster_path = movieLoader.completePosterPath(it.poster_path)
+                                    }
+                                    liveDataSectionList[s]?.value = movies.movieSet[s]
                                 }
                             }
 
@@ -52,8 +53,8 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
             }
         }
         movies.movieGenresList.forEach { s ->
-            if (!movies.movies.containsKey(s)) {
-                val id = movieGenres.genres.find { it.name == s }?.id
+            if (!movies.movieSet.containsKey(s)) {
+                val id = movies.movieGenres?.genres?.find { it.name == s }?.id
                 if (id != null) {
                     movieLoader.loadMovieByGenre(
                         s,
@@ -65,8 +66,11 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
                             ) {
                                 val result: LoadMovieResponse? = response.body()
                                 if (response.isSuccessful && result != null) {
-                                    movies.movies[s] = result.results
-                                    liveDataSectionList[s]?.value = movies.movies[s]
+                                    movies.movieSet[s] = result.results
+                                    movies.movieSet[s]?.forEach {
+                                        it.poster_path = movieLoader.completePosterPath(it.poster_path)
+                                    }
+                                    liveDataSectionList[s]?.value = movies.movieSet[s]
                                 }
                             }
 
@@ -77,37 +81,21 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
                 }
             }
         }
-        return movies.movies
+        return movies.movieSet
     }
-
-//    private fun movieParse(movieJSON: String, key: String?) {
-//        val loadResult: LoadMovieResponse =
-//            Gson().fromJson(movieJSON, LoadMovieResponse::class.java)
-//        if (key != null) {
-//            movies.movies[key] = loadResult.results
-//            liveDataSectionList.postValue(movies)
-//        }
-//    }
 
     override fun getGenres() {
         movieLoader.loadGenres(callback = object : Callback<MovieGenres> {
             override fun onResponse(call: Call<MovieGenres>, response: Response<MovieGenres>) {
                 val result: MovieGenres? = response.body()
                 if (response.isSuccessful && result != null) {
-                    movieGenres = result
+                    movies.movieGenres = result
                 }
             }
 
             override fun onFailure(call: Call<MovieGenres>, t: Throwable) {
             }
         })
-    }
-
-//    private fun genresParse(genresJSON: String, key: String?) {
-//        movieGenres = Gson().fromJson(genresJSON, MovieGenres::class.java)
-//    }
-
-    override fun getSections() {
     }
 
     override fun setMovieSectionsList(prefJSON: String?) {
@@ -127,8 +115,8 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
     }
 
     private fun fillEmptySection(key: String) {
-        if (!movies.movies.containsKey(key)) {
-            movies.movies[key] = listOf()
+        if (!movies.movieSet.containsKey(key)) {
+            movies.movieSet[key] = listOf()
         }
     }
 }
