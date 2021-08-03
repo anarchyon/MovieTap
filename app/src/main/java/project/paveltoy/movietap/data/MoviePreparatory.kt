@@ -2,6 +2,7 @@ package project.paveltoy.movietap.data
 
 import android.content.res.Resources
 import project.paveltoy.movietap.R
+import project.paveltoy.movietap.data.entity.MovieEntity
 
 //private fun prepareMoviesMap(movies: List<MovieEntity>): Map<Int, ArrayList<MovieEntity>> {
 //    val map = hashMapOf<Int, ArrayList<MovieEntity>>()

@@ -7,7 +7,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import project.paveltoy.movietap.data.TMDBMovieLoader
+import project.paveltoy.movietap.data.loader.TMDBMovieLoader
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
@@ -36,7 +36,7 @@ class MovieChangesService : Service() {
     }
 
     private fun loadMovieChangesList() {
-        val uri = URL("${TMDBMovieLoader.URL_MAIN}$REQUEST_MOVIE_CHANGES_LIST${TMDBMovieLoader.URL_API_KEY}")
+        val uri = URL("${TMDBMovieLoader.URL_MAIN}$REQUEST_MOVIE_CHANGES_LIST${TMDBMovieLoader.API_KEY}")
         val handler = Handler(Looper.getMainLooper())
         Thread {
             lateinit var connection: HttpsURLConnection
