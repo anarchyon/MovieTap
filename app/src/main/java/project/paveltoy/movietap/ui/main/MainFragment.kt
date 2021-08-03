@@ -66,8 +66,10 @@ class MainFragment : Fragment() {
         keys.forEach { key ->
             val movieAdapter = MovieAdapter()
             viewModel.liveDataSectionList[key]?.observe(viewLifecycleOwner) {
-                movieAdapter.data = it
-                movieAdapter.notifyDataSetChanged()
+                it?.let {
+                    movieAdapter.data = it
+                    movieAdapter.notifyDataSetChanged()
+                }
             }
             movieAdapters[key] = movieAdapter
         }
