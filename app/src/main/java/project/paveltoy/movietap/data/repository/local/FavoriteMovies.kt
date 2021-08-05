@@ -1,6 +1,19 @@
 package project.paveltoy.movietap.data.repository.local
 
-
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity
-data class FavoriteMovies()
+data class FavoriteMovies(
+    @PrimaryKey
+    val id: Int,
+    val title: String,
+    val vote_average: Double,
+    val vote_count: Int,
+    var poster_path: String,
+    var isFavorite: Boolean,
+    val release_date: String,
+    val overview: String,
+    val movieGenres: List<Int>,
+    val movieState: Int,
+    )
