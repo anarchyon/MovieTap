@@ -1,8 +1,12 @@
 package project.paveltoy.movietap.data.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.*
 
+@Entity
 data class MovieEntity(
+    @PrimaryKey
     val id: Int,
     val title: String,
     val vote_average: Double,
@@ -11,7 +15,7 @@ data class MovieEntity(
     var isFavorite: Boolean,
     val release_date: String,
     val overview: String,
-    val movieGenres: List<Int>,
+//    val movieGenres: List<Int> = arrayListOf(),
     val movieState: Int,
 ) {
     override fun equals(o: Any?): Boolean {

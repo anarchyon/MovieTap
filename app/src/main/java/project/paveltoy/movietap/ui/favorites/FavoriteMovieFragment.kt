@@ -70,6 +70,7 @@ class FavoriteMovieFragment : Fragment() {
 
     private fun setOnFavoriteChanged() {
         adapter.onFavoriteChanged = { movie: MovieEntity, index: Int ->
+
             movie.isFavorite = !movie.isFavorite
             viewModel.clickedMovieLiveData.value = movie
             val text = getTextForIsFavoriteSnackbar(resources, movie.title, movie.isFavorite)

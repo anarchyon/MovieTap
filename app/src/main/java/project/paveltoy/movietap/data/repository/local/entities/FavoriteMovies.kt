@@ -1,4 +1,4 @@
-package project.paveltoy.movietap.data.repository.local
+package project.paveltoy.movietap.data.repository.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -16,4 +16,4 @@ data class FavoriteMovies(
     val overview: String,
     val movieGenres: List<Int>,
     val movieState: Int,
-    )
+)
