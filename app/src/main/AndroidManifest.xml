@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="project.paveltoy.movietap">
-    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name="project.paveltoy.app.App"
@@ -18,7 +17,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".data.repository.contentprovider.MyContentProvider"
+            android:authorities="paveltoy.provider"
+            android:enabled="true"
+            android:exported="true"></provider>
+
         <service android:name=".service.MovieChangesService" />
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
