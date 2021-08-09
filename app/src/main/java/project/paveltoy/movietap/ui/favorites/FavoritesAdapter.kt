@@ -3,6 +3,7 @@ package project.paveltoy.movietap.ui.favorites
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.databinding.ItemFavoriteMovieBinding
 
@@ -42,12 +43,12 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>()
 
         private fun bindMovie(movie: MovieEntity) {
             itemFavoriteMovieBinding.apply {
-//                movieImageView.setImageURI(movie.poster_path)
                 movieNameTextView.text = movie.title
                 movieYearTextView.text = movie.release_date
 //                movieGenresTextView.text = movie.movieGenres.toString()
                 movieRateTextView.text = movie.vote_average.toString()
                 movieFavoriteToggleButton.isChecked = movie.isFavorite
+                Picasso.get().load(movie.poster_path).into(movieImageView)
             }
         }
 

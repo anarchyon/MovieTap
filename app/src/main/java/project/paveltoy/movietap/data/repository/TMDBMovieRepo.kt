@@ -12,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLiveData<List<MovieEntity>>>) :
+class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, MutableLiveData<List<MovieEntity>>>) :
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
     private var movies: Movies = Movies()
@@ -40,7 +40,7 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
                                     movies.movieSet[s]?.forEach {
                                         it.poster_path = movieLoader.completePosterPath(it.poster_path)
                                     }
-                                    liveDataSectionList[s]?.value = movies.movieSet[s]
+                                    liveDataSectionMovieList[s]?.value = movies.movieSet[s]
                                 }
                             }
 
@@ -70,7 +70,7 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
                                     movies.movieSet[s]?.forEach {
                                         it.poster_path = movieLoader.completePosterPath(it.poster_path)
                                     }
-                                    liveDataSectionList[s]?.value = movies.movieSet[s]
+                                    liveDataSectionMovieList[s]?.value = movies.movieSet[s]
                                 }
                             }
 

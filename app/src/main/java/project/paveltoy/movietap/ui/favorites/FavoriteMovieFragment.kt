@@ -54,11 +54,16 @@ class FavoriteMovieFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        data = viewModel.getFavoriteMovies()
+        viewModel.getFavoriteMovies()
+        viewModel.favoriteMovies.observe(viewLifecycleOwner) {
+            adapter.data = it
+            adapter.notifyDataSetChanged()
+        }
         setOnItemClickListener()
         setOnFavoriteChanged()
-        adapter.data = data
-        adapter.notifyDataSetChanged()
+    }
+
+    private fun readData(movies: List<MovieEntity>) {
     }
 
     private fun setOnItemClickListener() {
@@ -70,14 +75,13 @@ class FavoriteMovieFragment : Fragment() {
 
     private fun setOnFavoriteChanged() {
         adapter.onFavoriteChanged = { movie: MovieEntity, index: Int ->
-
             movie.isFavorite = !movie.isFavorite
-            viewModel.clickedMovieLiveData.value = movie
+            viewModel.removeFromFavorite(movie)
+//            viewModel.clickedMovieLiveData.value = movie
             val text = getTextForIsFavoriteSnackbar(resources, movie.title, movie.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)
                 .show()
-            adapter.data = viewModel.getFavoriteMovies()
             adapter.notifyItemRemoved(index)
         }
     }

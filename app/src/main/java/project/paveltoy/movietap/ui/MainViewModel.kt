@@ -12,10 +12,11 @@ import project.paveltoy.movietap.data.repository.local.SQLiteRepo
 class MainViewModel : ViewModel() {
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
     val movieToDisplayPreferences = MutableLiveData<List<String>>()
-    val liveDataSectionList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
-    val moviesLiveData = MutableLiveData<Movies>()
-    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionList)
+    val liveDataSectionMovieList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
+    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList)
     private val localRepo: SQLiteRepo = SQLiteRepo(getFavoriteDao())
+    val moviesLiveData = MutableLiveData<Movies>()
+    val favoriteMovies = MutableLiveData<List<MovieEntity>>()
 
     fun getMovieSections(): List<String> {
         return movieRepo.getMovieSections()
@@ -25,8 +26,12 @@ class MainViewModel : ViewModel() {
         return movieRepo.getMovies()
     }
 
-    fun getFavoriteMovies(): List<MovieEntity> {
-        return localRepo.getFavoriteMovies()
+    fun getFavoriteMovies() {
+        return localRepo.getFavoriteMovies(this::readFavorites)
+    }
+
+    private fun readFavorites(favorites: List<MovieEntity>) {
+        favoriteMovies.value = favorites
     }
 
     fun addToFavorite(movie: MovieEntity) {
@@ -46,7 +51,7 @@ class MainViewModel : ViewModel() {
     private fun setLiveDataSectionList() {
         movieRepo.getMovieSections().forEach {
             val liveData = MutableLiveData<List<MovieEntity>>()
-            liveDataSectionList[it] = liveData
+            liveDataSectionMovieList[it] = liveData
         }
     }
 }

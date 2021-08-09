@@ -7,5 +7,5 @@ interface LocalRepo {
 
     fun removeFromFavorite(movie: MovieEntity)
 
-    fun getFavoriteMovies(): List<MovieEntity>
+    fun getFavoriteMovies(callback: (List<MovieEntity>) -> Unit)
 }

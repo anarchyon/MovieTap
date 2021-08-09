@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,8 +64,11 @@ class MainFragment : Fragment() {
     private fun setMovieAdapters(keys: Set<String>) {
         keys.forEach { key ->
             val movieAdapter = MovieAdapter()
-            viewModel.liveDataSectionList[key]?.observe(viewLifecycleOwner) {
+            viewModel.liveDataSectionMovieList[key]?.observe(viewLifecycleOwner) {
                 it?.let {
+                    it.forEach {
+
+                    }
                     movieAdapter.data = it
                     movieAdapter.notifyDataSetChanged()
                 }
@@ -87,6 +89,11 @@ class MainFragment : Fragment() {
     private fun setOnFavoriteChanged() {
         movieSectionsAdapter.onFavoriteChanged = {
             it.isFavorite = !it.isFavorite
+            if (it.isFavorite) {
+                viewModel.addToFavorite(it)
+            } else {
+                viewModel.removeFromFavorite(it)
+            }
             val text = getTextForIsFavoriteSnackbar(resources, it.title, it.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)
