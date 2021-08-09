@@ -6,12 +6,12 @@ import project.paveltoy.movietap.data.repository.local.entities.FavoriteMovies
 
 @Dao
 interface FavoriteDao {
-    @Query("SELECT * FROM MovieEntity")
-    fun getFavoriteMovies(): List<MovieEntity>
+    @Query("SELECT * FROM FavoriteMovies")
+    fun getFavoriteMovies(): List<FavoriteMovies>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addToFavorite(movie: MovieEntity)
+    fun addToFavorite(favoriteMovies: FavoriteMovies)
 
     @Delete
-    fun deleteFromFavorite(movie: MovieEntity)
+    fun deleteFromFavorite(favoriteMovies: FavoriteMovies)
 }

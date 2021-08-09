@@ -14,7 +14,7 @@ class MainViewModel : ViewModel() {
     val movieToDisplayPreferences = MutableLiveData<List<String>>()
     val liveDataSectionMovieList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
     private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList)
-    private val localRepo: SQLiteRepo = SQLiteRepo(getFavoriteDao())
+    private val localRepo: SQLiteRepo = SQLiteRepo(getFavoriteDao(), this::readFavorites)
     val moviesLiveData = MutableLiveData<Movies>()
     val favoriteMovies = MutableLiveData<List<MovieEntity>>()
 
@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun getFavoriteMovies() {
-        return localRepo.getFavoriteMovies(this::readFavorites)
+        return localRepo.getFavoriteMovies()
     }
 
     private fun readFavorites(favorites: List<MovieEntity>) {

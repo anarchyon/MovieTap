@@ -14,6 +14,6 @@ data class FavoriteMovies(
     var isFavorite: Boolean,
     val release_date: String,
     val overview: String,
-    val movieGenres: List<Int>,
+    val movieGenres: String,
     val movieState: Int,
 )
