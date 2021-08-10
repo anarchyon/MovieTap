@@ -8,6 +8,7 @@ import project.paveltoy.movietap.data.entity.Movies
 import project.paveltoy.movietap.data.repository.MovieRepo
 import project.paveltoy.movietap.data.repository.TMDBMovieRepo
 import project.paveltoy.movietap.data.repository.local.SQLiteRepo
+import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 class MainViewModel : ViewModel() {
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
@@ -42,9 +43,10 @@ class MainViewModel : ViewModel() {
         localRepo.removeFromFavorite(movie)
     }
 
-    fun setDefaultSectionsList() {
+    fun setSectionsList(sectionsForDisplay: SectionsForDisplay?) {
         movieRepo.getGenres()
-        movieRepo.setMovieSectionsList(null)
+        movieRepo.setMovieSectionsList(sectionsForDisplay)
+//        movieRepo.setMovieSectionsList(null)
         setLiveDataSectionList()
     }
 

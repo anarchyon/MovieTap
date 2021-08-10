@@ -8,6 +8,7 @@ import project.paveltoy.movietap.data.entity.Movies
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.data.loader.LoadMovieResponse
 import project.paveltoy.movietap.data.loader.TMDBMovieLoader
+import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -98,25 +99,34 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
         })
     }
 
-    override fun setMovieSectionsList(prefJSON: String?) {
-        if (prefJSON == null) {
-            movies.movieSectionsList = listOf(
-                TMDBSections.SECTIONS[0].section,
-                TMDBSections.SECTIONS[1].section,
-                TMDBSections.SECTIONS[2].section,
-            )
-        }
-        movies.movieSectionsList.forEach {
-            fillEmptySection(it)
-        }
-        movies.movieGenresList.forEach {
-            fillEmptySection(it)
+    override fun setMovieSectionsList(sectionsForDisplay: SectionsForDisplay?) {
+        if (sectionsForDisplay == null) {
+            TMDBSections.SECTIONS.forEach {
+                movies.sectionsForDisplay.sections[it.section] = true
+            }
+            movies.movieGenres.genres.forEach {
+                movies.sectionsForDisplay.sections[it.name] = false
+            }
+
+//            movies.movieSectionsList = listOf(
+//                TMDBSections.SECTIONS[0].section,
+//                TMDBSections.SECTIONS[1].section,
+//                TMDBSections.SECTIONS[2].section,
+//            )
+//            movies.movieSectionsList.forEach {
+//                fillEmptySection(it)
+//            }
+//            movies.movieGenresList.forEach {
+//                fillEmptySection(it)
+//            }
+        } else {
+            movies.sectionsForDisplay = sectionsForDisplay
         }
     }
 
-    private fun fillEmptySection(key: String) {
-        if (!movies.movieSet.containsKey(key)) {
-            movies.movieSet[key] = listOf()
-        }
-    }
+//    private fun fillEmptySection(key: String) {
+//        if (!movies.movieSet.containsKey(key)) {
+//            movies.movieSet[key] = listOf()
+//        }
+//    }
 }

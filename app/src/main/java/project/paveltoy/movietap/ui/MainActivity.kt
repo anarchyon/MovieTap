@@ -15,11 +15,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.entity.Section
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
 import project.paveltoy.movietap.service.MovieChangesService
+import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 private const val PREFERENCES_TAG = "movie_list_preferences"
 private const val MOVIE_LIST_KEY = "movie_list_key"
@@ -100,9 +102,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private fun loadPreferences() {
         val preferences = getSharedPreferences(PREFERENCES_TAG, MODE_PRIVATE)
         if (preferences.contains(MOVIE_LIST_KEY)) {
-
+            val sectionsForDisplay = Gson().fromJson(preferences.getString(MOVIE_LIST_KEY, null), SectionsForDisplay::class.java)
+            mainViewModel.setSectionsList(sectionsForDisplay)
         } else {
-            mainViewModel.setDefaultSectionsList()
+            mainViewModel.setSectionsList(null)
         }
     }
 
