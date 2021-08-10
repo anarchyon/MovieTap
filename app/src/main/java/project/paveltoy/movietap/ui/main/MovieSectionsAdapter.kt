@@ -13,7 +13,6 @@ class MovieSectionsAdapter(private val movieAdapters: HashMap<String, MovieAdapt
     var data: Map<String, List<MovieEntity>> = HashMap()
     lateinit var onItemClick: (movie: MovieEntity) -> Unit
     lateinit var onFavoriteChanged: (movie: MovieEntity) -> Unit
-    lateinit var liveDataObserver: () -> Lifecycle
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemMovieSectionBinding =

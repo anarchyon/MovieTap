@@ -82,8 +82,6 @@ class MainFragment : Fragment() {
             viewModel.clickedMovieLiveData.value = it
             findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
         }
-
-        movieSectionsAdapter.liveDataObserver = { lifecycle }
     }
 
     private fun setOnFavoriteChanged() {

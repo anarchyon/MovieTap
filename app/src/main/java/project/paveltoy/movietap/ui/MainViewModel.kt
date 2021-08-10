@@ -24,7 +24,16 @@ class MainViewModel : ViewModel() {
     }
 
     fun getMovies(): Map<String, List<MovieEntity>> {
-        return movieRepo.getMovies()
+        val allSectionsMovies = movieRepo.getMovies()
+        val selectedSectionsMovies = hashMapOf<String, List<MovieEntity>>()
+        (movieRepo as TMDBMovieRepo).getSectionForDisplay().sections.let { sectionsMap ->
+            sectionsMap.keys.forEach {
+                if (sectionsMap[it] == true && allSectionsMovies.containsKey(it)) {
+                    selectedSectionsMovies[it] = allSectionsMovies[it]!!
+                }
+            }
+        }
+        return selectedSectionsMovies
     }
 
     fun getFavoriteMovies() {
