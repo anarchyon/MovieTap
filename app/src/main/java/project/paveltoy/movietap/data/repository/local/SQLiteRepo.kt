@@ -2,12 +2,15 @@ package project.paveltoy.movietap.data.repository.local
 
 import android.os.Handler
 import android.os.Looper
+import project.paveltoy.movietap.data.entity.Genre
 import project.paveltoy.movietap.data.entity.MovieEntity
+import project.paveltoy.movietap.data.entity.MovieGenres
 import project.paveltoy.movietap.data.repository.local.entities.FavoriteMovies
 
 class SQLiteRepo(
     private val favoriteDao: FavoriteDao,
-    private val callback: (List<MovieEntity>) -> Unit
+    private val callbackMovies: (List<MovieEntity>) -> Unit,
+    private val callbackGenres: (MovieGenres) -> Unit
 ) : LocalRepo {
     override fun addToFavorite(movie: MovieEntity) {
         Thread {
@@ -29,8 +32,24 @@ class SQLiteRepo(
         Thread {
             val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
             handler.post {
-                callback(moviesResult)
+                callbackMovies(moviesResult)
             }
+        }.start()
+    }
+
+    override fun getGenres() {
+        val handler = Handler(Looper.getMainLooper())
+        Thread {
+            val genresResult = favoriteDao.getGenres()
+            handler.post {
+                callbackGenres(genresResult)
+            }
+        }.start()
+    }
+
+    override fun addGenre(genre: Genre) {
+        Thread {
+            favoriteDao.addGenre(genre)
         }.start()
     }
 

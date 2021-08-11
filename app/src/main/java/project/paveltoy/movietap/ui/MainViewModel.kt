@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import project.paveltoy.app.App.Companion.getFavoriteDao
 import project.paveltoy.movietap.data.entity.MovieEntity
+import project.paveltoy.movietap.data.entity.MovieGenres
 import project.paveltoy.movietap.data.entity.Movies
+import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.data.repository.MovieRepo
 import project.paveltoy.movietap.data.repository.TMDBMovieRepo
 import project.paveltoy.movietap.data.repository.local.SQLiteRepo
@@ -15,12 +17,18 @@ class MainViewModel : ViewModel() {
     val movieToDisplayPreferences = MutableLiveData<List<String>>()
     val liveDataSectionMovieList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
     private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList)
-    private val localRepo: SQLiteRepo = SQLiteRepo(getFavoriteDao(), this::readFavorites)
+    private val localRepo: SQLiteRepo = SQLiteRepo(getFavoriteDao(), this::readFavorites, this::readGenres)
+
+    private fun readGenres(movieGenres: MovieGenres) {
+        
+    }
+
     val moviesLiveData = MutableLiveData<Movies>()
     val favoriteMovies = MutableLiveData<List<MovieEntity>>()
+    var callbackToSavePrefs: ((SectionsForDisplay) -> Unit)? = null
 
-    fun getMovieSections(): List<String> {
-        return movieRepo.getMovieSections()
+    fun getSectionsForDisplay(): SectionsForDisplay {
+        return (movieRepo as TMDBMovieRepo).getSectionForDisplay()
     }
 
     fun getMovies(): Map<String, List<MovieEntity>> {
@@ -64,5 +72,9 @@ class MainViewModel : ViewModel() {
             val liveData = MutableLiveData<List<MovieEntity>>()
             liveDataSectionMovieList[it] = liveData
         }
+    }
+
+    fun getTMDBSectionsSize(): Int {
+        return TMDBSections.SECTIONS.size
     }
 }

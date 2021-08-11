@@ -1,10 +1,7 @@
 package project.paveltoy.movietap.ui
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -29,15 +26,15 @@ private const val PERMISSION_REQUEST_INTERNET = 1
 
 class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
-    lateinit var mainViewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
+    private lateinit var preferences: SharedPreferences
     private val changesMovieReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             val response = p1?.getStringExtra(MovieChangesService.ACTION_TAG)
             processChangesMovieIntent(response)
         }
-
     }
+    lateinit var mainViewModel: MainViewModel
 
     private fun processChangesMovieIntent(response: String?) {
         Snackbar.make(
@@ -50,6 +47,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        mainViewModel.callbackToSavePrefs = this::savePreferences
+        preferences = getSharedPreferences(PREFERENCES_TAG, MODE_PRIVATE)
 
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(changesMovieReceiver, IntentFilter(MovieChangesService.ACTION))
@@ -69,7 +70,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     private fun startLoadData() {
         setNavigation()
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         fillTMDBSections()
         loadPreferences()
 //        val intent = Intent(this, MovieChangesService::class.java)
@@ -100,13 +100,17 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun loadPreferences() {
-        val preferences = getSharedPreferences(PREFERENCES_TAG, MODE_PRIVATE)
         if (preferences.contains(MOVIE_LIST_KEY)) {
             val sectionsForDisplay = Gson().fromJson(preferences.getString(MOVIE_LIST_KEY, null), SectionsForDisplay::class.java)
             mainViewModel.setSectionsList(sectionsForDisplay)
         } else {
             mainViewModel.setSectionsList(null)
         }
+    }
+
+    private fun savePreferences(sectionsForDisplay: SectionsForDisplay) {
+        val sectionForDisplayString = Gson().toJson(sectionsForDisplay)
+        preferences.edit().putString(MOVIE_LIST_KEY, sectionForDisplayString).apply()
     }
 
     private fun fillTMDBSections() {

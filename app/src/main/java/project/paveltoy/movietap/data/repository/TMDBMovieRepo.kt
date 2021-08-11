@@ -41,67 +41,6 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
                 }
             }
         }
-//        movies.movieSectionsList.forEach { s ->
-//            if (movies.movieSet.containsKey(s)) {
-//                val request = TMDBSections.SECTIONS.find { it.section == s }?.request
-//                if (request != null) {
-//                    movieLoader.loadMovieBySection(
-//                        s,
-//                        request,
-//                        callback = object : Callback<LoadMovieResponse> {
-//                            override fun onResponse(
-//                                call: Call<LoadMovieResponse>,
-//                                response: Response<LoadMovieResponse>
-//                            ) {
-//                                val result: LoadMovieResponse? = response.body()
-//                                if (response.isSuccessful && result != null) {
-//                                    movies.movieSet[s] = result.results
-//                                    movies.movieSet[s]?.forEach {
-//                                        it.poster_path =
-//                                            movieLoader.completePosterPath(it.poster_path)
-//                                    }
-//                                    liveDataSectionMovieList[s]?.value = movies.movieSet[s]
-//                                }
-//                            }
-//
-//                            override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
-//                                Log.d("@@@", t.message!!)
-//                            }
-//
-//                        })
-//                }
-//            }
-//        }
-//        movies.movieGenresList.forEach { s ->
-//            if (!movies.movieSet.containsKey(s)) {
-//                val id = movies.movieGenres?.genres?.find { it.name == s }?.id
-//                if (id != null) {
-//                    movieLoader.loadMovieByGenre(
-//                        s,
-//                        id,
-//                        callback = object : Callback<LoadMovieResponse> {
-//                            override fun onResponse(
-//                                call: Call<LoadMovieResponse>,
-//                                response: Response<LoadMovieResponse>
-//                            ) {
-//                                val result: LoadMovieResponse? = response.body()
-//                                if (response.isSuccessful && result != null) {
-//                                    movies.movieSet[s] = result.results
-//                                    movies.movieSet[s]?.forEach {
-//                                        it.poster_path =
-//                                            movieLoader.completePosterPath(it.poster_path)
-//                                    }
-//                                    liveDataSectionMovieList[s]?.value = movies.movieSet[s]
-//                                }
-//                            }
-//
-//                            override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
-//                            }
-//
-//                        })
-//                }
-//            }
-//        }
         return movies.movieSet
     }
 
@@ -183,18 +122,6 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
                 fillEmptySection(it.section)
             }
             insertGenresToSections()
-
-//            movies.movieSectionsList = listOf(
-//                TMDBSections.SECTIONS[0].section,
-//                TMDBSections.SECTIONS[1].section,
-//                TMDBSections.SECTIONS[2].section,
-//            )
-//            movies.movieSectionsList.forEach {
-//                fillEmptySection(it)
-//            }
-//            movies.movieGenresList.forEach {
-//                fillEmptySection(it)
-//            }
         } else {
             movies.sectionsForDisplay = sectionsForDisplay
         }

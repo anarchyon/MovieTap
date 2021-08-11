@@ -14,4 +14,7 @@
     <string name="subunit_popular">Популярные</string>
     <string name="subunit_latest">Последние новинки</string>
     <string name="changes_movie_found">На сервере найдены изменения информации по фильмам</string>
+    <string name="main_sections_text">Основные разделы:</string>
+    <string name="genres_sections_text">Жанры:</string>
+    <string name="save_selected_sections_text">Сохранить</string>
 </resources>
