@@ -61,6 +61,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun setSectionsList(sectionsForDisplay: SectionsForDisplay?) {
+        localRepo.getGenres()
         movieRepo.getGenres()
         movieRepo.setMovieSectionsList(sectionsForDisplay)
 //        movieRepo.setMovieSectionsList(null)

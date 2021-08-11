@@ -32,7 +32,7 @@ class SQLiteRepo(
         Thread {
             val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
             handler.post {
-                callbackMovies(moviesResult)
+                callbackMovies.invoke(moviesResult)
             }
         }.start()
     }
@@ -42,7 +42,7 @@ class SQLiteRepo(
         Thread {
             val genresResult = favoriteDao.getGenres()
             handler.post {
-                callbackGenres(genresResult)
+                callbackGenres.invoke(genresResult)
             }
         }.start()
     }
