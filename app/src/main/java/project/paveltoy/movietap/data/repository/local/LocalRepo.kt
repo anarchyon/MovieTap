@@ -4,13 +4,13 @@ import project.paveltoy.movietap.data.entity.Genre
 import project.paveltoy.movietap.data.entity.MovieEntity
 
 interface LocalRepo {
-    fun addToFavorite(movie: MovieEntity)
+    suspend fun addToFavorite(movie: MovieEntity)
 
-    fun removeFromFavorite(movie: MovieEntity)
+    suspend fun removeFromFavorite(movie: MovieEntity)
 
-    fun getFavoriteMovies()
+    suspend fun getFavoriteMovies()
 
-    fun getGenres()
+    suspend fun getGenres()
 
-    fun addGenre(genre: Genre)
+    suspend fun addGenre(genre: Genre)
 }

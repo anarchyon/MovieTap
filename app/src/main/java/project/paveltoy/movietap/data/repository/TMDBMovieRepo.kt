@@ -2,12 +2,14 @@ package project.paveltoy.movietap.data.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import project.paveltoy.app.App
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.MovieGenres
 import project.paveltoy.movietap.data.entity.Movies
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.data.loader.LoadMovieResponse
 import project.paveltoy.movietap.data.loader.TMDBMovieLoader
+import project.paveltoy.movietap.data.repository.local.SQLiteRepo
 import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,6 +19,27 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
     private var movies: Movies = Movies()
+    private val localRepo: SQLiteRepo = SQLiteRepo(App.getFavoriteDao(), this::readFavorites, this::readGenres)
+
+    suspend fun getFavoriteMovies() {
+        return localRepo.getFavoriteMovies()
+    }
+
+    private fun readGenres(movieGenres: MovieGenres) {
+
+    }
+
+    private fun readFavorites(favorites: List<MovieEntity>) {
+        favoriteMovies.value = favorites
+    }
+
+    suspend fun addToFavorite(movie: MovieEntity) {
+        localRepo.addToFavorite(movie)
+    }
+
+    suspend fun removeFromFavorite(movie: MovieEntity) {
+        localRepo.removeFromFavorite(movie)
+    }
 
     override fun getMovieSections(): List<String> {
         return movies.sectionsForDisplay.sections.keys.toList()

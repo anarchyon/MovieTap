@@ -2,6 +2,7 @@ package project.paveltoy.movietap.data.repository.local
 
 import android.os.Handler
 import android.os.Looper
+import kotlinx.coroutines.coroutineScope
 import project.paveltoy.movietap.data.entity.Genre
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.MovieGenres
@@ -12,45 +13,39 @@ class SQLiteRepo(
     private val callbackMovies: (List<MovieEntity>) -> Unit,
     private val callbackGenres: (MovieGenres) -> Unit
 ) : LocalRepo {
-    override fun addToFavorite(movie: MovieEntity) {
-        Thread {
-            val favoriteMovie = convertMovieToDb(movie)
-            favoriteDao.addToFavorite(favoriteMovie)
-        }.start()
+    override suspend fun addToFavorite(movie: MovieEntity) = coroutineScope {
+        val favoriteMovie = convertMovieToDb(movie)
+        favoriteDao.addToFavorite(favoriteMovie)
     }
 
-    override fun removeFromFavorite(movie: MovieEntity) {
-        Thread {
-            val favoriteMovie = convertMovieToDb(movie)
-            favoriteDao.deleteFromFavorite(favoriteMovie)
-            getFavoriteMovies()
-        }.start()
+    override suspend fun removeFromFavorite(movie: MovieEntity) = coroutineScope {
+        val favoriteMovie = convertMovieToDb(movie)
+        favoriteDao.deleteFromFavorite(favoriteMovie)
+        getFavoriteMovies()
     }
 
-    override fun getFavoriteMovies() {
-        val handler = Handler(Looper.getMainLooper())
-        Thread {
-            val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
-            handler.post {
-                callbackMovies.invoke(moviesResult)
-            }
-        }.start()
+    override suspend fun getFavoriteMovies() = coroutineScope {
+        val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
+        callbackMovies.invoke(moviesResult)
     }
 
-    override fun getGenres() {
-        val handler = Handler(Looper.getMainLooper())
-        Thread {
-            val genresResult = favoriteDao.getGenres()
-            handler.post {
-                callbackGenres.invoke(genresResult)
-            }
-        }.start()
+//    {
+//        val handler = Handler(Looper.getMainLooper())
+//        Thread {
+//            val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
+//            handler.post {
+//                callbackMovies.invoke(moviesResult)
+//            }
+//        }.start()
+//    }
+
+    override suspend fun getGenres() = coroutineScope {
+        val genresResult = favoriteDao.getGenres()
+        callbackGenres.invoke(genresResult)
     }
 
-    override fun addGenre(genre: Genre) {
-        Thread {
+    override suspend fun addGenre(genre: Genre) = coroutineScope {
             favoriteDao.addGenre(genre)
-        }.start()
     }
 
     private fun convertMovieToDb(movie: MovieEntity): FavoriteMovies {
