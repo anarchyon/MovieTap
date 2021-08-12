@@ -8,6 +8,6 @@ class Movies {
     var sectionsForDisplay = SectionsForDisplay()
     var movieSectionsList: List<String> = listOf()
     var movieGenresList: List<String> = listOf()
-    var movieSet = hashMapOf<String, List<MovieEntity>>()
+    var movieSet = mutableMapOf<String, List<MovieEntity>>()
 
 }

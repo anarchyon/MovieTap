@@ -2,6 +2,9 @@ package project.paveltoy.movietap.data.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import project.paveltoy.app.App
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.MovieGenres
@@ -15,30 +18,35 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, MutableLiveData<List<MovieEntity>>>) :
+class TMDBMovieRepo(
+    private val liveDataSectionMovieList: MutableMap<String, MutableLiveData<List<MovieEntity>>>,
+    private val moviesLiveData: MutableLiveData<MutableMap<String, List<MovieEntity>>>,
+) :
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
     private var movies: Movies = Movies()
-    private val localRepo: SQLiteRepo = SQLiteRepo(App.getFavoriteDao(), this::readFavorites, this::readGenres)
+    private val localRepo: SQLiteRepo = SQLiteRepo(App.getFavoriteDao())
 
-    suspend fun getFavoriteMovies() {
-        return localRepo.getFavoriteMovies()
+    override fun getFavoriteMovies(favoriteLiveData: MutableLiveData<List<MovieEntity>>) {
+        CoroutineScope(Dispatchers.Default).launch {
+            favoriteLiveData.postValue(localRepo.getFavoriteMovies())
+        }
     }
 
-    private fun readGenres(movieGenres: MovieGenres) {
-
+    override fun addToFavorite(movie: MovieEntity) {
+        CoroutineScope(Dispatchers.Default).launch {
+            localRepo.addToFavorite(movie)
+        }
     }
 
-    private fun readFavorites(favorites: List<MovieEntity>) {
-        favoriteMovies.value = favorites
-    }
-
-    suspend fun addToFavorite(movie: MovieEntity) {
-        localRepo.addToFavorite(movie)
-    }
-
-    suspend fun removeFromFavorite(movie: MovieEntity) {
-        localRepo.removeFromFavorite(movie)
+    override fun removeFromFavorite(
+        movie: MovieEntity,
+        favoriteLiveData: MutableLiveData<List<MovieEntity>>
+    ) {
+        CoroutineScope(Dispatchers.Default).launch {
+            localRepo.removeFromFavorite(movie)
+            favoriteLiveData.postValue(localRepo.getFavoriteMovies())
+        }
     }
 
     override fun getMovieSections(): List<String> {
@@ -49,7 +57,17 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
         return movies.sectionsForDisplay
     }
 
+    fun getLoadedMovies(): Map<String, List<MovieEntity>> = movies.movieSet
+
     override fun getMovies(): Map<String, List<MovieEntity>> {
+        CoroutineScope(Dispatchers.Main).launch {
+            if (movies.movieGenres.genres.isEmpty()) getGenres()
+            getMoviesFromRepo()
+        }
+        return movies.movieSet
+    }
+
+    private fun getMoviesFromRepo() {
         movies.sectionsForDisplay.sections.let { map ->
             map.keys.forEach { section ->
                 if (map[section] == true) {
@@ -64,7 +82,6 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
                 }
             }
         }
-        return movies.movieSet
     }
 
     private fun loadMoviesBySection(section: String, request: String) {
@@ -146,7 +163,10 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
             }
             insertGenresToSections()
         } else {
-            movies.sectionsForDisplay = sectionsForDisplay
+            CoroutineScope(Dispatchers.Main).launch {
+                if (movies.movieGenres.genres.isEmpty()) getGenres()
+                movies.sectionsForDisplay = sectionsForDisplay
+            }
         }
     }
 
@@ -162,6 +182,7 @@ class TMDBMovieRepo(private val liveDataSectionMovieList: HashMap<String, Mutabl
     private fun fillEmptySection(key: String) {
         if (!movies.movieSet.containsKey(key)) {
             movies.movieSet[key] = listOf()
+            moviesLiveData.postValue(movies.movieSet)
         }
     }
 }

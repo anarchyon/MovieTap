@@ -1,5 +1,6 @@
 package project.paveltoy.movietap.data.repository
 
+import androidx.lifecycle.MutableLiveData
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
@@ -8,4 +9,7 @@ interface MovieRepo {
     fun getGenres()
     fun setMovieSectionsList(sectionsForDisplay: SectionsForDisplay?)
     fun getMovieSections(): List<String>
+    fun getFavoriteMovies(favoriteLiveData: MutableLiveData<List<MovieEntity>>)
+    fun removeFromFavorite(movie: MovieEntity, favoriteLiveData: MutableLiveData<List<MovieEntity>>)
+    fun addToFavorite(movie: MovieEntity)
 }

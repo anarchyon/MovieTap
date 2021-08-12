@@ -6,13 +6,11 @@ import kotlinx.coroutines.coroutineScope
 import project.paveltoy.movietap.data.entity.Genre
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.MovieGenres
+import project.paveltoy.movietap.data.repository.local.entities.DbMovieGenres
 import project.paveltoy.movietap.data.repository.local.entities.FavoriteMovies
 
-class SQLiteRepo(
-    private val favoriteDao: FavoriteDao,
-    private val callbackMovies: (List<MovieEntity>) -> Unit,
-    private val callbackGenres: (MovieGenres) -> Unit
-) : LocalRepo {
+class SQLiteRepo(private val favoriteDao: FavoriteDao) : LocalRepo {
+
     override suspend fun addToFavorite(movie: MovieEntity) = coroutineScope {
         val favoriteMovie = convertMovieToDb(movie)
         favoriteDao.addToFavorite(favoriteMovie)
@@ -21,31 +19,28 @@ class SQLiteRepo(
     override suspend fun removeFromFavorite(movie: MovieEntity) = coroutineScope {
         val favoriteMovie = convertMovieToDb(movie)
         favoriteDao.deleteFromFavorite(favoriteMovie)
-        getFavoriteMovies()
     }
 
-    override suspend fun getFavoriteMovies() = coroutineScope {
-        val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
-        callbackMovies.invoke(moviesResult)
+    override suspend fun getFavoriteMovies(): List<MovieEntity> = coroutineScope {
+        return@coroutineScope convertToListMovieEntity(favoriteDao.getFavoriteMovies())
     }
 
-//    {
-//        val handler = Handler(Looper.getMainLooper())
-//        Thread {
-//            val moviesResult = convertToListMovieEntity(favoriteDao.getFavoriteMovies())
-//            handler.post {
-//                callbackMovies.invoke(moviesResult)
-//            }
-//        }.start()
-//    }
-
-    override suspend fun getGenres() = coroutineScope {
-        val genresResult = favoriteDao.getGenres()
-        callbackGenres.invoke(genresResult)
+    override suspend fun getGenres(): MovieGenres = coroutineScope {
+        val movieGenres = MovieGenres()
+        movieGenres.genres = favoriteDao.getGenres()
+        return@coroutineScope movieGenres
     }
 
     override suspend fun addGenre(genre: Genre) = coroutineScope {
-            favoriteDao.addGenre(genre)
+        val dbMovieGenres = convertGenreToDbMovieGenre(genre)
+        favoriteDao.addGenre(dbMovieGenres)
+    }
+
+    private fun convertGenreToDbMovieGenre(genre: Genre): DbMovieGenres {
+        return DbMovieGenres(
+            genre.id,
+            genre.name
+        )
     }
 
     private fun convertMovieToDb(movie: MovieEntity): FavoriteMovies {

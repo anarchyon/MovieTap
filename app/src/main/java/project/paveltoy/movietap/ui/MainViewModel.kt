@@ -2,24 +2,19 @@ package project.paveltoy.movietap.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.*
-import project.paveltoy.app.App.Companion.getFavoriteDao
 import project.paveltoy.movietap.data.entity.MovieEntity
-import project.paveltoy.movietap.data.entity.MovieGenres
-import project.paveltoy.movietap.data.entity.Movies
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.data.repository.MovieRepo
 import project.paveltoy.movietap.data.repository.TMDBMovieRepo
-import project.paveltoy.movietap.data.repository.local.SQLiteRepo
 import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 class MainViewModel : ViewModel() {
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
     val movieToDisplayPreferences = MutableLiveData<List<String>>()
-    val liveDataSectionMovieList = hashMapOf<String, MutableLiveData<List<MovieEntity>>>()
-    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList)
-//    private val localRepo: SQLiteRepo = SQLiteRepo(getFavoriteDao(), this::readFavorites, this::readGenres)
-    val moviesLiveData = MutableLiveData<Movies>()
+    val liveDataSectionMovieList = mutableMapOf<String, MutableLiveData<List<MovieEntity>>>()
+    val moviesLiveData = MutableLiveData<MutableMap<String, List<MovieEntity>>>()
+    val moviesToDisplayLiveData = MutableLiveData<MutableMap<String, List<MovieEntity>>>()
+    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList, moviesLiveData)
     val favoriteMovies = MutableLiveData<List<MovieEntity>>()
     var callbackToSavePrefs: ((SectionsForDisplay) -> Unit)? = null
 
@@ -28,45 +23,50 @@ class MainViewModel : ViewModel() {
     }
 
     fun getMovies(): Map<String, List<MovieEntity>> {
-        val allSectionsMovies = movieRepo.getMovies()
-        val selectedSectionsMovies = hashMapOf<String, List<MovieEntity>>()
-        (movieRepo as TMDBMovieRepo).getSectionForDisplay().sections.let { sectionsMap ->
+        val sectionsForDisplay = (movieRepo as TMDBMovieRepo).getSectionForDisplay()
+        val allSectionsMovies = if (isSelectedMoviesLoaded(sectionsForDisplay)) {
+            movieRepo.getLoadedMovies()
+        } else {
+            //пока грузятся все фильмы, если не загружен хотя бы один раздел, потом изменю
+            movieRepo.getMovies()
+        }
+        val selectedSectionsMovies = mutableMapOf<String, List<MovieEntity>>()
+        sectionsForDisplay.sections.let { sectionsMap ->
             sectionsMap.keys.forEach {
                 if (sectionsMap[it] == true && allSectionsMovies.containsKey(it)) {
                     selectedSectionsMovies[it] = allSectionsMovies[it]!!
                 }
             }
         }
+        moviesToDisplayLiveData.value = selectedSectionsMovies
         return selectedSectionsMovies
     }
 
-//    suspend fun getFavoriteMovies() {
-//        return localRepo.getFavoriteMovies()
-//    }
-//
-//    private fun readGenres(movieGenres: MovieGenres) {
-//
-//    }
-//
-//    private fun readFavorites(favorites: List<MovieEntity>) {
-//        favoriteMovies.value = favorites
-//    }
-//
-//    suspend fun addToFavorite(movie: MovieEntity) {
-//        localRepo.addToFavorite(movie)
-//    }
-//
-//    suspend fun removeFromFavorite(movie: MovieEntity) {
-//        localRepo.removeFromFavorite(movie)
-//    }
-//
-    fun setSectionsList(sectionsForDisplay: SectionsForDisplay?) {
-        CoroutineScope(Dispatchers.Main).launch {
-            localRepo.getGenres()
-            movieRepo.getGenres()
+    private fun isSelectedMoviesLoaded(sectionsForDisplay: SectionsForDisplay): Boolean {
+        val loadedMovies = (movieRepo as TMDBMovieRepo).getLoadedMovies()
+        if (loadedMovies.isEmpty()) return false
+        sectionsForDisplay.sections.let { sectionMap ->
+            sectionMap.keys.forEach {
+                if (!loadedMovies.containsKey(it)) return false
+            }
         }
+        return true
+    }
+
+    fun getFavoriteMovies() {
+        movieRepo.getFavoriteMovies(favoriteMovies)
+    }
+
+    fun addToFavorite(movie: MovieEntity) {
+        movieRepo.addToFavorite(movie)
+    }
+
+    fun removeFromFavorite(movie: MovieEntity) {
+        movieRepo.removeFromFavorite(movie, favoriteMovies)
+    }
+
+    fun setSectionsList(sectionsForDisplay: SectionsForDisplay?) {
         movieRepo.setMovieSectionsList(sectionsForDisplay)
-//        movieRepo.setMovieSectionsList(null)
         setLiveDataSectionList()
     }
 

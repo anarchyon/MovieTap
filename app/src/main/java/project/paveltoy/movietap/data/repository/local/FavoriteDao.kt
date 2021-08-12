@@ -3,6 +3,7 @@ package project.paveltoy.movietap.data.repository.local
 import androidx.room.*
 import project.paveltoy.movietap.data.entity.Genre
 import project.paveltoy.movietap.data.entity.MovieGenres
+import project.paveltoy.movietap.data.repository.local.entities.DbMovieGenres
 import project.paveltoy.movietap.data.repository.local.entities.FavoriteMovies
 
 @Dao
@@ -17,8 +18,8 @@ interface FavoriteDao {
     fun deleteFromFavorite(favoriteMovies: FavoriteMovies)
 
     @Query("SELECT * FROM DbMovieGenres")
-    fun getGenres(): MovieGenres
+    fun getGenres(): List<Genre>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addGenre(genre: Genre)
+    fun addGenre(dbMovieGenres: DbMovieGenres)
 }
