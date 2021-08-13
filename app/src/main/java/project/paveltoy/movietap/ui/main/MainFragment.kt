@@ -51,18 +51,16 @@ class MainFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        val movies = viewModel.getMovies()
-        setMovieAdapters(movies.keys)
+//        val movies = viewModel.getMovies()
+        val dataSet = viewModel.getMovieSections()
+        setMovieAdapters(dataSet)
         movieSectionsAdapter = MovieSectionsAdapter(movieAdapters)
-        viewModel.moviesLiveData.observe(viewLifecycleOwner) {
-            viewModel.getMovies()
-        }
-        viewModel.moviesToDisplayLiveData.observe(viewLifecycleOwner) {
+        movieSectionsAdapter.data = dataSet
+        viewModel.movieSectionsLiveData.observe(viewLifecycleOwner) {
             movieSectionsAdapter.data = it
             movieSectionsAdapter.notifyDataSetChanged()
         }
         mainRecyclerView.adapter = movieSectionsAdapter
-
 
         setOnItemClickListener()
         setOnFavoriteChanged()

@@ -20,7 +20,6 @@ import retrofit2.Response
 
 class TMDBMovieRepo(
     private val liveDataSectionMovieList: MutableMap<String, MutableLiveData<List<MovieEntity>>>,
-    private val moviesLiveData: MutableLiveData<MutableMap<String, List<MovieEntity>>>,
 ) :
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
@@ -49,22 +48,22 @@ class TMDBMovieRepo(
         }
     }
 
-    override fun getMovieSections(): List<String> {
-        return movies.sectionsForDisplay.sections.keys.toList()
-    }
+//    override fun getMovieSections(): List<String> {
+//        return movies.sectionsForDisplay.sections.keys.toList()
+//    }
 
-    fun getSectionForDisplay(): SectionsForDisplay {
+    override fun getMovieSectionsList(): SectionsForDisplay {
         return movies.sectionsForDisplay
     }
 
     fun getLoadedMovies(): Map<String, List<MovieEntity>> = movies.movieSet
 
-    override fun getMovies(): Map<String, List<MovieEntity>> {
+    override fun getMovies()/*: Map<String, List<MovieEntity>> */ {
         CoroutineScope(Dispatchers.Main).launch {
             if (movies.movieGenres.genres.isEmpty()) getGenres()
             getMoviesFromRepo()
         }
-        return movies.movieSet
+//        return movies.movieSet
     }
 
     private fun getMoviesFromRepo() {
@@ -135,9 +134,7 @@ class TMDBMovieRepo(
 
                 override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
                 }
-
             })
-
     }
 
     override fun getGenres() {
@@ -163,7 +160,7 @@ class TMDBMovieRepo(
             }
             insertGenresToSections()
         } else {
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 if (movies.movieGenres.genres.isEmpty()) getGenres()
                 movies.sectionsForDisplay = sectionsForDisplay
             }
@@ -171,10 +168,13 @@ class TMDBMovieRepo(
     }
 
     private fun insertGenresToSections() {
-        movies.movieGenres.genres.forEach {
-            if (!movies.sectionsForDisplay.sections.containsKey(it.name)) {
-                movies.sectionsForDisplay.sections[it.name] = false
-                fillEmptySection(it.name)
+        CoroutineScope(Dispatchers.Default).launch {
+            if (movies.movieGenres.genres.isEmpty()) getGenres()
+            movies.movieGenres.genres.forEach {
+                if (!movies.sectionsForDisplay.sections.containsKey(it.name)) {
+                    movies.sectionsForDisplay.sections[it.name] = false
+                    fillEmptySection(it.name)
+                }
             }
         }
     }
@@ -182,7 +182,6 @@ class TMDBMovieRepo(
     private fun fillEmptySection(key: String) {
         if (!movies.movieSet.containsKey(key)) {
             movies.movieSet[key] = listOf()
-            moviesLiveData.postValue(movies.movieSet)
         }
     }
 }

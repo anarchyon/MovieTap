@@ -2,6 +2,9 @@ package project.paveltoy.movietap.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.data.repository.MovieRepo
@@ -10,36 +13,38 @@ import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 class MainViewModel : ViewModel() {
     val clickedMovieLiveData = MutableLiveData<MovieEntity>()
-    val movieToDisplayPreferences = MutableLiveData<List<String>>()
+
+    //    val movieToDisplayPreferences = MutableLiveData<List<String>>()
     val liveDataSectionMovieList = mutableMapOf<String, MutableLiveData<List<MovieEntity>>>()
-    val moviesLiveData = MutableLiveData<MutableMap<String, List<MovieEntity>>>()
-    val moviesToDisplayLiveData = MutableLiveData<MutableMap<String, List<MovieEntity>>>()
-    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList, moviesLiveData)
+    val movieSectionsLiveData = MutableLiveData<Set<String>>()
+
+    //    val moviesToDisplayLiveData = MutableLiveData<MutableMap<String, List<MovieEntity>>>()
+    private val movieRepo: MovieRepo = TMDBMovieRepo(liveDataSectionMovieList)
     val favoriteMovies = MutableLiveData<List<MovieEntity>>()
     var callbackToSavePrefs: ((SectionsForDisplay) -> Unit)? = null
 
     fun getSectionsForDisplay(): SectionsForDisplay {
-        return (movieRepo as TMDBMovieRepo).getSectionForDisplay()
+        return movieRepo.getMovieSectionsList()
     }
 
-    fun getMovies(): Map<String, List<MovieEntity>> {
-        val sectionsForDisplay = (movieRepo as TMDBMovieRepo).getSectionForDisplay()
-        val allSectionsMovies = if (isSelectedMoviesLoaded(sectionsForDisplay)) {
-            movieRepo.getLoadedMovies()
+    fun getMovies()/*: Map<String, List<MovieEntity>>*/ {
+        val sectionsForDisplay = movieRepo.getMovieSectionsList()
+        /*val allSectionsMovies = */if (isSelectedMoviesLoaded(sectionsForDisplay)) {
+            (movieRepo as TMDBMovieRepo).getLoadedMovies()
         } else {
             //пока грузятся все фильмы, если не загружен хотя бы один раздел, потом изменю
             movieRepo.getMovies()
         }
-        val selectedSectionsMovies = mutableMapOf<String, List<MovieEntity>>()
-        sectionsForDisplay.sections.let { sectionsMap ->
-            sectionsMap.keys.forEach {
-                if (sectionsMap[it] == true && allSectionsMovies.containsKey(it)) {
-                    selectedSectionsMovies[it] = allSectionsMovies[it]!!
-                }
-            }
-        }
-        moviesToDisplayLiveData.value = selectedSectionsMovies
-        return selectedSectionsMovies
+//        val selectedSectionsMovies = mutableMapOf<String, List<MovieEntity>>()
+//        sectionsForDisplay.sections.let { sectionsMap ->
+//            sectionsMap.keys.forEach {
+//                if (sectionsMap[it] == true && allSectionsMovies.containsKey(it)) {
+//                    selectedSectionsMovies[it] = allSectionsMovies[it]!!
+//                }
+//            }
+//        }
+//        moviesToDisplayLiveData.value = selectedSectionsMovies
+//        return selectedSectionsMovies
     }
 
     private fun isSelectedMoviesLoaded(sectionsForDisplay: SectionsForDisplay): Boolean {
@@ -66,18 +71,30 @@ class MainViewModel : ViewModel() {
     }
 
     fun setSectionsList(sectionsForDisplay: SectionsForDisplay?) {
-        movieRepo.setMovieSectionsList(sectionsForDisplay)
-        setLiveDataSectionList()
+        CoroutineScope(Dispatchers.Default).launch {
+            movieRepo.setMovieSectionsList(sectionsForDisplay)
+            setLiveDataSectionList()
+            getMovies()
+        }
     }
 
     private fun setLiveDataSectionList() {
-        movieRepo.getMovieSections().forEach {
-            val liveData = MutableLiveData<List<MovieEntity>>()
-            liveDataSectionMovieList[it] = liveData
+        val sectionsToMainScreen = mutableSetOf<String>()
+        movieRepo.getMovieSectionsList().sections.let { sectionsMap ->
+            sectionsMap.keys.forEach {
+                if (sectionsMap[it] == true) sectionsToMainScreen.add(it)
+                val liveData = MutableLiveData<List<MovieEntity>>()
+                liveDataSectionMovieList[it] = liveData
+            }
         }
+        movieSectionsLiveData.postValue(sectionsToMainScreen)
     }
 
     fun getTMDBSectionsSize(): Int {
         return TMDBSections.SECTIONS.size
+    }
+
+    fun getMovieSections(): Set<String> {
+        return movieRepo.getMovieSectionsList().sections.keys
     }
 }
