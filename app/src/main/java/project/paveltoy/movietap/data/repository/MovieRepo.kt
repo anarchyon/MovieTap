@@ -5,7 +5,7 @@ import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 interface MovieRepo {
-    fun getMovies()/*: Map<String, List<MovieEntity>>*/
+    fun getMovies()
     fun getGenres()
     fun setMovieSectionsList(sectionsForDisplay: SectionsForDisplay?)
     fun getMovieSectionsList(): SectionsForDisplay

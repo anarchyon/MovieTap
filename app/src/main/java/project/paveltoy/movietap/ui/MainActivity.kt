@@ -50,6 +50,12 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.callbackToSavePrefs = this::savePreferences
+        mainViewModel.movieGenres.observe(this) {
+            loadPreferences()
+        }
+        mainViewModel.sectionsForDisplayLiveData.observe(this) {
+            mainViewModel.getMovies()
+        }
         preferences = getSharedPreferences(PREFERENCES_TAG, MODE_PRIVATE)
 
         LocalBroadcastManager.getInstance(this)
@@ -71,7 +77,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private fun startLoadData() {
         setNavigation()
         fillTMDBSections()
-        loadPreferences()
+        mainViewModel.setMainSections()
+        mainViewModel.getGenres()
 //        val intent = Intent(this, MovieChangesService::class.java)
 //        startService(intent)
     }
@@ -101,11 +108,12 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     private fun loadPreferences() {
         if (preferences.contains(MOVIE_LIST_KEY)) {
-            val sectionsForDisplay = Gson().fromJson(preferences.getString(MOVIE_LIST_KEY, null), SectionsForDisplay::class.java)
+            val sectionsForDisplay = Gson().fromJson(
+                preferences.getString(MOVIE_LIST_KEY, null),
+                SectionsForDisplay::class.java
+            )
             mainViewModel.setSectionsList(sectionsForDisplay)
-        } else {
-            mainViewModel.setSectionsList(null)
-        }
+        } else mainViewModel.setSectionsList(null)
     }
 
     private fun savePreferences(sectionsForDisplay: SectionsForDisplay) {

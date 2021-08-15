@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -53,7 +54,7 @@ class FavoriteMovieFragment : Fragment() {
 
     private fun serRecyclerView() {
         favoriteRecyclerView = binding.favoriteRecyclerView
-        favoriteRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        favoriteRecyclerView.layoutManager = LinearLayoutManager(context)
         favoriteRecyclerView.adapter = adapter
     }
 

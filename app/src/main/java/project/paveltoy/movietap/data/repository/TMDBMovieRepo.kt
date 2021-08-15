@@ -20,6 +20,7 @@ import retrofit2.Response
 
 class TMDBMovieRepo(
     private val liveDataSectionMovieList: MutableMap<String, MutableLiveData<List<MovieEntity>>>,
+    private val movieGenres: MutableLiveData<MovieGenres>,
 ) :
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
@@ -48,22 +49,12 @@ class TMDBMovieRepo(
         }
     }
 
-//    override fun getMovieSections(): List<String> {
-//        return movies.sectionsForDisplay.sections.keys.toList()
-//    }
-
     override fun getMovieSectionsList(): SectionsForDisplay {
         return movies.sectionsForDisplay
     }
 
-    fun getLoadedMovies(): Map<String, List<MovieEntity>> = movies.movieSet
-
-    override fun getMovies()/*: Map<String, List<MovieEntity>> */ {
-        CoroutineScope(Dispatchers.Main).launch {
-            if (movies.movieGenres.genres.isEmpty()) getGenres()
+    override fun getMovies() {
             getMoviesFromRepo()
-        }
-//        return movies.movieSet
     }
 
     private fun getMoviesFromRepo() {
@@ -144,6 +135,7 @@ class TMDBMovieRepo(
                 if (response.isSuccessful && result != null) {
                     movies.movieGenres = result
                     insertGenresToSections()
+                    movieGenres.value = movies.movieGenres
                 }
             }
 
@@ -153,30 +145,25 @@ class TMDBMovieRepo(
     }
 
     override fun setMovieSectionsList(sectionsForDisplay: SectionsForDisplay?) {
-        if (sectionsForDisplay == null) {
-            TMDBSections.SECTIONS.forEach {
-                movies.sectionsForDisplay.sections[it.section] = true
-                fillEmptySection(it.section)
-            }
-            insertGenresToSections()
-        } else {
-            CoroutineScope(Dispatchers.Default).launch {
-                if (movies.movieGenres.genres.isEmpty()) getGenres()
-                movies.sectionsForDisplay = sectionsForDisplay
-            }
+        sectionsForDisplay?.let {
+            movies.sectionsForDisplay = sectionsForDisplay
+        }
+    }
+
+    fun setMainMovieSectionsList() {
+        TMDBSections.SECTIONS.forEach {
+            movies.sectionsForDisplay.sections[it.section] = true
+            fillEmptySection(it.section)
         }
     }
 
     private fun insertGenresToSections() {
-        CoroutineScope(Dispatchers.Default).launch {
-            if (movies.movieGenres.genres.isEmpty()) getGenres()
             movies.movieGenres.genres.forEach {
                 if (!movies.sectionsForDisplay.sections.containsKey(it.name)) {
                     movies.sectionsForDisplay.sections[it.name] = false
                     fillEmptySection(it.name)
                 }
             }
-        }
     }
 
     private fun fillEmptySection(key: String) {
