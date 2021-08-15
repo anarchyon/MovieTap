@@ -2,86 +2,130 @@ package project.paveltoy.movietap.data.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import project.paveltoy.app.App
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.entity.MovieGenres
 import project.paveltoy.movietap.data.entity.Movies
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.data.loader.LoadMovieResponse
 import project.paveltoy.movietap.data.loader.TMDBMovieLoader
+import project.paveltoy.movietap.data.repository.local.SQLiteRepo
+import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLiveData<List<MovieEntity>>>) :
+class TMDBMovieRepo(
+    private val liveDataSectionMovieList: MutableMap<String, MutableLiveData<List<MovieEntity>>>,
+    private val movieGenres: MutableLiveData<MovieGenres>,
+) :
     MovieRepo {
     private val movieLoader = TMDBMovieLoader()
     private var movies: Movies = Movies()
+    private val localRepo: SQLiteRepo = SQLiteRepo(App.getFavoriteDao())
 
-    override fun getMovieSections(): List<String> {
-        return movies.movieSectionsList.toList().plus(movies.movieGenresList)
+    override fun getFavoriteMovies(favoriteLiveData: MutableLiveData<List<MovieEntity>>) {
+        CoroutineScope(Dispatchers.Default).launch {
+            favoriteLiveData.postValue(localRepo.getFavoriteMovies())
+        }
     }
 
-    override fun getMovies(): Map<String, List<MovieEntity>> {
-        movies.movieSectionsList.forEach { s ->
-            if (movies.movieSet.containsKey(s)) {
-                val request = TMDBSections.SECTIONS.find { it.section == s }?.request
-                if (request != null) {
-                    movieLoader.loadMovieBySection(
-                        s,
-                        request,
-                        callback = object : Callback<LoadMovieResponse> {
-                            override fun onResponse(
-                                call: Call<LoadMovieResponse>,
-                                response: Response<LoadMovieResponse>
-                            ) {
-                                val result: LoadMovieResponse? = response.body()
-                                if (response.isSuccessful && result != null) {
-                                    movies.movieSet[s] = result.results
-                                    movies.movieSet[s]?.forEach {
-                                        it.poster_path = movieLoader.completePosterPath(it.poster_path)
-                                    }
-                                    liveDataSectionList[s]?.value = movies.movieSet[s]
-                                }
-                            }
+    override fun addToFavorite(movie: MovieEntity) {
+        CoroutineScope(Dispatchers.Default).launch {
+            localRepo.addToFavorite(movie)
+        }
+    }
 
-                            override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
-                                Log.d("@@@", t.message!!)
-                            }
+    override fun removeFromFavorite(
+        movie: MovieEntity,
+        favoriteLiveData: MutableLiveData<List<MovieEntity>>
+    ) {
+        CoroutineScope(Dispatchers.Default).launch {
+            localRepo.removeFromFavorite(movie)
+            favoriteLiveData.postValue(localRepo.getFavoriteMovies())
+        }
+    }
 
-                        })
+    override fun getMovieSectionsList(): SectionsForDisplay {
+        return movies.sectionsForDisplay
+    }
+
+    override fun getMovies() {
+            getMoviesFromRepo()
+    }
+
+    private fun getMoviesFromRepo() {
+        movies.sectionsForDisplay.sections.let { map ->
+            map.keys.forEach { section ->
+                if (map[section] == true) {
+                    val request = TMDBSections.SECTIONS.find { it.section == section }?.request
+                    val genreId = movies.movieGenres.genres.find { it.name == section }?.id
+                    if (request != null) {
+                        loadMoviesBySection(section, request)
+                    }
+                    if (genreId != null) {
+                        loadMoviesByGenre(section, genreId)
+                    }
                 }
             }
         }
-        movies.movieGenresList.forEach { s ->
-            if (!movies.movieSet.containsKey(s)) {
-                val id = movies.movieGenres?.genres?.find { it.name == s }?.id
-                if (id != null) {
-                    movieLoader.loadMovieByGenre(
-                        s,
-                        id,
-                        callback = object : Callback<LoadMovieResponse> {
-                            override fun onResponse(
-                                call: Call<LoadMovieResponse>,
-                                response: Response<LoadMovieResponse>
-                            ) {
-                                val result: LoadMovieResponse? = response.body()
-                                if (response.isSuccessful && result != null) {
-                                    movies.movieSet[s] = result.results
-                                    movies.movieSet[s]?.forEach {
-                                        it.poster_path = movieLoader.completePosterPath(it.poster_path)
-                                    }
-                                    liveDataSectionList[s]?.value = movies.movieSet[s]
-                                }
-                            }
+    }
 
-                            override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
+    private fun loadMoviesBySection(section: String, request: String) {
+        movieLoader.loadMovieBySection(
+            section,
+            request,
+            callback = object : Callback<LoadMovieResponse> {
+                override fun onResponse(
+                    call: Call<LoadMovieResponse>,
+                    response: Response<LoadMovieResponse>
+                ) {
+                    val result: LoadMovieResponse? = response.body()
+                    if (response.isSuccessful && result != null) {
+                        movies.movieSet[section] = result.results
+                        movies.movieSet[section]?.forEach { movie ->
+                            movie.poster_path?.let {
+                                movie.poster_path = movieLoader.completePosterPath(it)
                             }
-
-                        })
+                        }
+                        liveDataSectionMovieList[section]?.value = movies.movieSet[section]
+                    }
                 }
-            }
-        }
-        return movies.movieSet
+
+                override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
+                    Log.d("@@@", t.message!!)
+                }
+
+            })
+    }
+
+    private fun loadMoviesByGenre(section: String, genreId: Int) {
+        movieLoader.loadMovieByGenre(
+            section,
+            genreId,
+            callback = object : Callback<LoadMovieResponse> {
+                override fun onResponse(
+                    call: Call<LoadMovieResponse>,
+                    response: Response<LoadMovieResponse>
+                ) {
+                    val result: LoadMovieResponse? = response.body()
+                    if (response.isSuccessful && result != null) {
+                        movies.movieSet[section] = result.results
+                        movies.movieSet[section]?.forEach { movie ->
+                            movie.poster_path?.let {
+                                movie.poster_path = movieLoader.completePosterPath(it)
+                            }
+                        }
+                        liveDataSectionMovieList[section]?.value = movies.movieSet[section]
+                    }
+                }
+
+                override fun onFailure(call: Call<LoadMovieResponse>, t: Throwable) {
+                }
+            })
     }
 
     override fun getGenres() {
@@ -90,6 +134,8 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
                 val result: MovieGenres? = response.body()
                 if (response.isSuccessful && result != null) {
                     movies.movieGenres = result
+                    insertGenresToSections()
+                    movieGenres.value = movies.movieGenres
                 }
             }
 
@@ -98,20 +144,26 @@ class TMDBMovieRepo(private val liveDataSectionList: HashMap<String, MutableLive
         })
     }
 
-    override fun setMovieSectionsList(prefJSON: String?) {
-        if (prefJSON == null) {
-            movies.movieSectionsList = listOf(
-                TMDBSections.SECTIONS[0].section,
-                TMDBSections.SECTIONS[1].section,
-                TMDBSections.SECTIONS[2].section,
-            )
+    override fun setMovieSectionsList(sectionsForDisplay: SectionsForDisplay?) {
+        sectionsForDisplay?.let {
+            movies.sectionsForDisplay = sectionsForDisplay
         }
-        movies.movieSectionsList.forEach {
-            fillEmptySection(it)
+    }
+
+    fun setMainMovieSectionsList() {
+        TMDBSections.SECTIONS.forEach {
+            movies.sectionsForDisplay.sections[it.section] = true
+            fillEmptySection(it.section)
         }
-        movies.movieGenresList.forEach {
-            fillEmptySection(it)
-        }
+    }
+
+    private fun insertGenresToSections() {
+            movies.movieGenres.genres.forEach {
+                if (!movies.sectionsForDisplay.sections.containsKey(it.name)) {
+                    movies.sectionsForDisplay.sections[it.name] = false
+                    fillEmptySection(it.name)
+                }
+            }
     }
 
     private fun fillEmptySection(key: String) {

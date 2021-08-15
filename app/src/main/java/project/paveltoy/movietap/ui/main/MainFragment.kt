@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,20 +51,22 @@ class MainFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        val movies = viewModel.getMovies()
-        setMovieAdapters(movies.keys)
-        movieSectionsAdapter = MovieSectionsAdapter(movieAdapters)
-        mainRecyclerView.adapter = movieSectionsAdapter
-        movieSectionsAdapter.data = movies
-        movieSectionsAdapter.notifyDataSetChanged()
-        setOnItemClickListener()
-        setOnFavoriteChanged()
+        viewModel.movieSectionsLiveData.observe(viewLifecycleOwner) {
+            val dataSet = viewModel.getMovieSections()
+            setMovieAdapters(dataSet)
+            movieSectionsAdapter = MovieSectionsAdapter(movieAdapters)
+            movieSectionsAdapter.data = it
+            movieSectionsAdapter.notifyDataSetChanged()
+            mainRecyclerView.adapter = movieSectionsAdapter
+            setOnItemClickListener()
+            setOnFavoriteChanged()
+        }
     }
 
     private fun setMovieAdapters(keys: Set<String>) {
         keys.forEach { key ->
             val movieAdapter = MovieAdapter()
-            viewModel.liveDataSectionList[key]?.observe(viewLifecycleOwner) {
+            viewModel.liveDataSectionMovieList[key]?.observe(viewLifecycleOwner) {
                 it?.let {
                     movieAdapter.data = it
                     movieAdapter.notifyDataSetChanged()
@@ -80,13 +81,16 @@ class MainFragment : Fragment() {
             viewModel.clickedMovieLiveData.value = it
             findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
         }
-
-        movieSectionsAdapter.liveDataObserver = { lifecycle }
     }
 
     private fun setOnFavoriteChanged() {
         movieSectionsAdapter.onFavoriteChanged = {
             it.isFavorite = !it.isFavorite
+            if (it.isFavorite) {
+                viewModel.addToFavorite(it)
+            } else {
+                viewModel.removeFromFavorite(it)
+            }
             val text = getTextForIsFavoriteSnackbar(resources, it.title, it.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)

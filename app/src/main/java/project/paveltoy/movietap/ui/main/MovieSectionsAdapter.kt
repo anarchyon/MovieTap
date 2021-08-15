@@ -10,10 +10,9 @@ import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
 class MovieSectionsAdapter(private val movieAdapters: HashMap<String, MovieAdapter>) :
     RecyclerView.Adapter<MovieSectionsAdapter.BaseViewHolder>() {
-    var data: Map<String, List<MovieEntity>> = HashMap()
+    var data: Set<String> = setOf()
     lateinit var onItemClick: (movie: MovieEntity) -> Unit
     lateinit var onFavoriteChanged: (movie: MovieEntity) -> Unit
-    lateinit var liveDataObserver: () -> Lifecycle
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemMovieSectionBinding =
@@ -22,11 +21,11 @@ class MovieSectionsAdapter(private val movieAdapters: HashMap<String, MovieAdapt
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        val keys = data.keys
-        holder.bind(keys.elementAt(position))
+//        val keys = data.keys
+        holder.bind(data.elementAt(position))
     }
 
-    override fun getItemCount() = data.keys.size
+    override fun getItemCount() = data.size
 
     inner class BaseViewHolder(private val itemMovieSectionBinding: ItemMovieSectionBinding) :
         RecyclerView.ViewHolder(itemMovieSectionBinding.root) {
@@ -48,7 +47,6 @@ class MovieSectionsAdapter(private val movieAdapters: HashMap<String, MovieAdapt
         }
 
         private fun setAdapter(key: String) {
-//            movieAdapter.data = this@MovieSectionsAdapter.data[key]!!
             movieAdapters[key]?.onItemClick = onItemClick
             movieAdapters[key]?.onFavoriteChanged = onFavoriteChanged
         }

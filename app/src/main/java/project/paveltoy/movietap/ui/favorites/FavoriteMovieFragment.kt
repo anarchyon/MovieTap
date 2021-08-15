@@ -9,9 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.entity.MovieEntity
 import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
@@ -49,16 +54,20 @@ class FavoriteMovieFragment : Fragment() {
 
     private fun serRecyclerView() {
         favoriteRecyclerView = binding.favoriteRecyclerView
-        favoriteRecyclerView.layoutManager = GridLayoutManager(context, 2)
+        favoriteRecyclerView.layoutManager = LinearLayoutManager(context)
         favoriteRecyclerView.adapter = adapter
     }
 
     private fun setAdapter() {
-        data = viewModel.getFavoriteMovies()
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.getFavoriteMovies()
+        }
+        viewModel.favoriteMovies.observe(viewLifecycleOwner) {
+            adapter.data = it
+            adapter.notifyDataSetChanged()
+        }
         setOnItemClickListener()
         setOnFavoriteChanged()
-        adapter.data = data
-        adapter.notifyDataSetChanged()
     }
 
     private fun setOnItemClickListener() {
@@ -71,12 +80,13 @@ class FavoriteMovieFragment : Fragment() {
     private fun setOnFavoriteChanged() {
         adapter.onFavoriteChanged = { movie: MovieEntity, index: Int ->
             movie.isFavorite = !movie.isFavorite
-            viewModel.clickedMovieLiveData.value = movie
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.removeFromFavorite(movie)
+            }
             val text = getTextForIsFavoriteSnackbar(resources, movie.title, movie.isFavorite)
             Snackbar.make(requireView(), text, BaseTransientBottomBar.LENGTH_LONG)
                 .setAnchorView(R.id.bottom_navigation)
                 .show()
-            adapter.data = viewModel.getFavoriteMovies()
             adapter.notifyItemRemoved(index)
         }
     }
