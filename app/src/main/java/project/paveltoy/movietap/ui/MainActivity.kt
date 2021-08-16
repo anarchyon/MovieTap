@@ -61,16 +61,18 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(changesMovieReceiver, IntentFilter(MovieChangesService.ACTION))
 
-        checkInternetPermission()
+        checkPermissions()
     }
 
-    private fun checkInternetPermission() {
+    private fun checkPermissions() {
         if (checkSelfPermission(Manifest.permission.INTERNET)
+            == PackageManager.PERMISSION_GRANTED
+            || checkSelfPermission(Manifest.permission.READ_CONTACTS)
             == PackageManager.PERMISSION_GRANTED
         ) {
             startLoadData()
         } else {
-            requestInternetPermission()
+            requestPermissions()
         }
     }
 
@@ -100,9 +102,14 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         }
     }
 
-    private fun requestInternetPermission() {
+    private fun requestPermissions() {
         if (shouldShowRequestPermissionRationale(Manifest.permission.INTERNET)) {
-            requestPermissions(arrayOf(Manifest.permission.INTERNET), PERMISSION_REQUEST_INTERNET)
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.READ_CONTACTS
+                ), PERMISSION_REQUEST_INTERNET
+            )
         }
     }
 

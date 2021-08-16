@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="project.paveltoy.movietap">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name="project.paveltoy.app.App"
         android:allowBackup="true"
@@ -22,11 +25,10 @@
             android:name=".data.repository.contentprovider.MyContentProvider"
             android:authorities="paveltoy.provider"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true"/>
 
         <service android:name=".service.MovieChangesService" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
