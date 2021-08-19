@@ -11,6 +11,9 @@
     <action
         android:id="@+id/action_global_placeholder2"
         app:destination="@id/main_list_customize_fragment" />
+    <action
+        android:id="@+id/action_to_contacts_fragment"
+        app:destination="@id/contactsShow" />
     <fragment
         android:id="@+id/favorite_movie_fragment"
         android:name="project.paveltoy.movietap.ui.favorites.FavoriteMovieFragment"
@@ -35,4 +38,8 @@
         android:id="@+id/detail_fragment"
         android:name="project.paveltoy.movietap.ui.details.DetailFragment"
         android:label="DetailFragment" />
+    <fragment
+        android:id="@+id/contactsShow"
+        android:name="project.paveltoy.movietap.ui.contacts.ContactsShow"
+        android:label="ContactsShow" />
 </navigation>
