@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import project.paveltoy.movietap.databinding.FragmentContactsBinding
 
 private const val PERMISSION_REQUEST_CONTACTS = 22
@@ -61,15 +61,34 @@ class ContactsShow : Fragment() {
         context?.let {
             val contentResolver: ContentResolver = it.contentResolver
             val contactsCursor: Cursor? = contentResolver.query(
-                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                ContactsContract.Contacts.CONTENT_URI,
                 null, null, null,
-                ContactsContract.PhoneLookup.DISPLAY_NAME + " ASC"
+                ContactsContract.Contacts.DISPLAY_NAME + " ASC"
             )
             contactsCursor?.let { cursor ->
                 for (i in 0..cursor.count) {
                     if (cursor.moveToPosition(i)) {
-                        val name = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME))
-                        val phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.NORMALIZED_NUMBER))
+                        val name =
+                            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                        var phoneNumber: String? = null
+                        val id =
+                            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
+                        val hasPhone =
+                            cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
+                        if (hasPhone.toInt() > 0) {
+                            val phoneCursor: Cursor? = contentResolver.query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                arrayOf(id), null
+                            )
+                            phoneCursor?.let { pCursor ->
+                                if (pCursor.moveToFirst()) {
+                                    phoneNumber = pCursor.getString(pCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                                }
+                            }
+                            phoneCursor?.close()
+                        }
                         addData(name, phoneNumber)
                     }
                 }
@@ -85,7 +104,10 @@ class ContactsShow : Fragment() {
     }
 
     private fun initRecyclerView() {
-
+        val recyclerView = binding.contactsLayout
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val adapter = ContactAdapter(contactsList)
+        recyclerView.adapter = adapter
     }
 
     override fun onDestroyView() {

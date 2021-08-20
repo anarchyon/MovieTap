@@ -21,7 +21,6 @@ class MovieSectionsAdapter(private val movieAdapters: HashMap<String, MovieAdapt
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-//        val keys = data.keys
         holder.bind(data.elementAt(position))
     }
 
