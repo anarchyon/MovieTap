@@ -2,8 +2,10 @@ package project.paveltoy.movietap.ui.contacts
 
 import android.Manifest
 import android.content.ContentResolver
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import project.paveltoy.movietap.databinding.FragmentContactsBinding
 
 private const val PERMISSION_REQUEST_CONTACTS = 22
+private const val INTENT_PHONE_NUMBER = "intent_phone_number"
 
 class ContactsShow : Fragment() {
     private var _binding: FragmentContactsBinding? = null
@@ -108,6 +111,12 @@ class ContactsShow : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = ContactAdapter(contactsList)
         recyclerView.adapter = adapter
+        adapter.onContactClick = this::callContact
+    }
+
+    private fun callContact(phoneNumber: String) {
+        val callIntent: Intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+        startActivity(callIntent)
     }
 
     override fun onDestroyView() {

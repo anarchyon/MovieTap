@@ -7,7 +7,7 @@ import project.paveltoy.movietap.databinding.ItemContactBinding
 
 class ContactAdapter(private val contactsList: ArrayList<ArrayList<String?>>) :
     RecyclerView.Adapter<ContactAdapter.BaseViewHolder>() {
-
+    lateinit var onContactClick: (phoneNumber: String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemContactBinding =
@@ -21,12 +21,17 @@ class ContactAdapter(private val contactsList: ArrayList<ArrayList<String?>>) :
 
     override fun getItemCount(): Int = contactsList.size
 
-    class BaseViewHolder(private val binding: ItemContactBinding) :
+    inner class BaseViewHolder(private val binding: ItemContactBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
             fun bind(contact: java.util.ArrayList<String?>) {
                 binding.contactName.text = contact[0]
                 binding.contactPhoneNumber.text = contact[1]
+                itemView.setOnClickListener {
+                    contact[1]?.let {
+                        onContactClick(it)
+                    }
+                }
             }
     }
 }

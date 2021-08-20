@@ -11,4 +11,5 @@
     <dimen name="detail_fragment_titles_text_size">20sp</dimen>
     <dimen name="movie_name_text_size_in_list">12sp</dimen>
     <dimen name="movie_year_text_size_in_list">10sp</dimen>
+    <dimen name="item_contact_height">45dp</dimen>
 </resources>
