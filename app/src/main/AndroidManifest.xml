@@ -23,7 +23,7 @@
 
         <provider
             android:name=".data.repository.contentprovider.MyContentProvider"
-            android:authorities="paveltoy.provider"
+            android:authorities="@string/authorities"
             android:enabled="true"
             android:exported="true"/>
 

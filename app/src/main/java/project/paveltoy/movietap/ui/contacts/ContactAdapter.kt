@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import project.paveltoy.movietap.databinding.ItemContactBinding
 
-class ContactAdapter(private val contactsList: ArrayList<ArrayList<String?>>) :
+class ContactAdapter() :
     RecyclerView.Adapter<ContactAdapter.BaseViewHolder>() {
     lateinit var onContactClick: (phoneNumber: String) -> Unit
+    var contactsList: ArrayList<ArrayList<String?>> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemContactBinding =

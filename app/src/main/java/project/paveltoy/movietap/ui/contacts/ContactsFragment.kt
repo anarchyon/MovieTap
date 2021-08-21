@@ -14,6 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import project.paveltoy.movietap.databinding.FragmentContactsBinding
 
 private const val PERMISSION_REQUEST_CONTACTS = 22
@@ -23,6 +27,8 @@ class ContactsShow : Fragment() {
     private var _binding: FragmentContactsBinding? = null
     private val binding get() = _binding!!
     private var contactsList = arrayListOf<ArrayList<String?>>()
+    private lateinit var recyclerView: RecyclerView
+    private val adapter = ContactAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,16 +41,17 @@ class ContactsShow : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkContactsPermission()
+        initRecyclerView()
     }
 
     private fun checkContactsPermission() {
         context?.let {
-            when {
+            when (PackageManager.PERMISSION_GRANTED) {
                 ContextCompat.checkSelfPermission(
                     it,
                     Manifest.permission.READ_CONTACTS
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    getContacts()
+                ) -> {
+                    loadContacts()
                 }
                 else -> {
                     requestContactsPermission()
@@ -98,7 +105,10 @@ class ContactsShow : Fragment() {
             }
             contactsCursor?.close()
         }
-        initRecyclerView()
+        view?.post {
+            adapter.contactsList = contactsList
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun addData(name: String, phoneNumber: String?) {
@@ -107,16 +117,34 @@ class ContactsShow : Fragment() {
     }
 
     private fun initRecyclerView() {
-        val recyclerView = binding.contactsLayout
+        recyclerView = binding.contactsLayout
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = ContactAdapter(contactsList)
         recyclerView.adapter = adapter
         adapter.onContactClick = this::callContact
     }
 
     private fun callContact(phoneNumber: String) {
-        val callIntent: Intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+        val callIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
         startActivity(callIntent)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                loadContacts()
+            }
+        }
+    }
+
+    private fun loadContacts() {
+        CoroutineScope(Dispatchers.Default).launch {
+            getContacts()
+        }
     }
 
     override fun onDestroyView() {
