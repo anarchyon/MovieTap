@@ -4,11 +4,16 @@ import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
@@ -28,6 +33,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferences: SharedPreferences
+    private lateinit var navController: NavController
     private val changesMovieReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             val response = p1?.getStringExtra(MovieChangesService.ACTION_TAG)
@@ -47,6 +53,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        initToolbar()
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.callbackToSavePrefs = this::savePreferences
@@ -86,7 +94,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private fun setNavigation() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container_main) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -101,9 +109,11 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun requestInternetPermission() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.INTERNET)) {
-            requestPermissions(arrayOf(Manifest.permission.INTERNET), PERMISSION_REQUEST_INTERNET)
-        }
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.INTERNET
+                ), PERMISSION_REQUEST_INTERNET
+            )
     }
 
     private fun loadPreferences() {
@@ -140,6 +150,25 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLoadData()
             }
+        }
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(binding.topAppbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.contacts -> {
+                navController.navigate(R.id.action_to_contacts_fragment)
+                true
+            }
+            else -> {false}
         }
     }
 

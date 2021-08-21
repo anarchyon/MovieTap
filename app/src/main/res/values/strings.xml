@@ -17,4 +17,7 @@
     <string name="main_sections_text">Основные разделы:</string>
     <string name="genres_sections_text">Жанры:</string>
     <string name="save_selected_sections_text">Сохранить</string>
+    <string name="read_contacts">Открыть контакты</string>
+    <string name="contacts_title">Контакты</string>
+    <string name="authorities">paveltoy.provider</string>
 </resources>
