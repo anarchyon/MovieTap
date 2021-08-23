@@ -20,4 +20,5 @@
     <string name="read_contacts">Открыть контакты</string>
     <string name="contacts_title">Контакты</string>
     <string name="authorities">paveltoy.provider</string>
+    <string name="maps">Открыть карту</string>
 </resources>

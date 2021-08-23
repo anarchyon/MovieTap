@@ -28,6 +28,7 @@ import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 private const val PREFERENCES_TAG = "movie_list_preferences"
 private const val MOVIE_LIST_KEY = "movie_list_key"
 private const val PERMISSION_REQUEST_INTERNET = 1
+private const val PERMISSION_REQUEST_LOCATION = 2
 
 class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -109,11 +110,11 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun requestInternetPermission() {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.INTERNET
-                ), PERMISSION_REQUEST_INTERNET
-            )
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.INTERNET
+            ), PERMISSION_REQUEST_INTERNET
+        )
     }
 
     private fun loadPreferences() {
@@ -147,8 +148,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_INTERNET) {
-            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLoadData()
+            }
+        }
+        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+            if (grantResults.isNotEmpty() &&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openMaps()
             }
         }
     }
@@ -163,13 +169,38 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.contacts -> {
                 navController.navigate(R.id.action_to_contacts_fragment)
                 true
             }
-            else -> {false}
+            R.id.maps -> {
+                checkLocationPermission()
+                true
+            }
+            else -> {
+                false
+            }
         }
+    }
+
+    private fun checkLocationPermission() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            openMaps()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun openMaps() {
+        navController.navigate(R.id.action_to_maps_fragment)
+    }
+
+    private fun requestLocationPermission() {
+        requestPermissions(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            PERMISSION_REQUEST_LOCATION
+        )
     }
 
     override fun onDestroy() {
