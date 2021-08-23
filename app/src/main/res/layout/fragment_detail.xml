@@ -7,52 +7,52 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/detail_fragment_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/movie_poster_detail_fragment_image_view"
+            android:id="@+id/movie_poster_image_view"
             android:layout_width="@dimen/movie_poster_width"
             android:layout_height="@dimen/movie_poster_height"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/movie_name_detail_fragment_text_view"
+            app:layout_constraintTop_toBottomOf="@id/movie_name_detail_text_view"
             app:srcCompat="@drawable/ic_movie_miss_image_2" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/movie_name_detail_fragment_text_view"
+            android:id="@+id/movie_name_detail_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/movie_name_text_size"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/movie_year_fragment_detail_text_view"
+            android:id="@+id/movie_year_detail_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/movie_poster_detail_fragment_image_view"
-            app:layout_constraintTop_toBottomOf="@id/movie_name_detail_fragment_text_view" />
+            app:layout_constraintStart_toEndOf="@id/movie_poster_image_view"
+            app:layout_constraintTop_toBottomOf="@id/movie_name_detail_text_view" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/movie_genre_detail_fragment_text_view"
+            android:id="@+id/movie_genre_detail_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/movie_year_fragment_detail_text_view"
-            app:layout_constraintTop_toBottomOf="@id/movie_year_fragment_detail_text_view" />
+            app:layout_constraintStart_toStartOf="@id/movie_year_detail_text_view"
+            app:layout_constraintTop_toBottomOf="@id/movie_year_detail_text_view" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/movie_description_title_detail_fragment_text_view"
+            android:id="@+id/movie_descr_title_detail_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/description_title"
             android:textSize="@dimen/detail_fragment_titles_text_size"
-            app:layout_constraintTop_toBottomOf="@id/movie_poster_detail_fragment_image_view" />
+            app:layout_constraintTop_toBottomOf="@id/movie_poster_image_view" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/movie_description_detail_fragment_text_view"
+            android:id="@+id/movie_descr_detail_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/margin_common"
-            app:layout_constraintTop_toBottomOf="@id/movie_description_title_detail_fragment_text_view" />
+            app:layout_constraintTop_toBottomOf="@id/movie_descr_title_detail_text_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

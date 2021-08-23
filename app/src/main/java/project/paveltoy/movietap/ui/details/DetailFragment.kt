@@ -39,10 +39,10 @@ class DetailFragment : Fragment() {
 
     private fun updateInfo() {
         binding.apply {
-            movieDescriptionDetailFragmentTextView.text = movie.overview
-            movieNameDetailFragmentTextView.text = movie.title
-            movieYearFragmentDetailTextView.text = movie.release_date
-            Picasso.get().load(movie.poster_path).into(moviePosterDetailFragmentImageView)
+            movieDescrDetailTextView.text = movie.overview
+            movieNameDetailTextView.text = movie.title
+            movieYearDetailTextView.text = movie.release_date
+            Picasso.get().load(movie.poster_path).into(moviePosterImageView)
 //            movieGenreDetailFragmentTextView.text = resources.getString(movie.movieGenres)
         }
     }
