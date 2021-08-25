@@ -1,7 +1,5 @@
 package project.paveltoy.movietap.data.repository.local
 
-import android.os.Handler
-import android.os.Looper
 import kotlinx.coroutines.coroutineScope
 import project.paveltoy.movietap.data.entity.Genre
 import project.paveltoy.movietap.data.entity.MovieEntity

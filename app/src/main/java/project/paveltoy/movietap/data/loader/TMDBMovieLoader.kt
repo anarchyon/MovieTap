@@ -1,18 +1,11 @@
 package project.paveltoy.movietap.data.loader
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import project.paveltoy.movietap.BuildConfig
 import project.paveltoy.movietap.data.entity.MovieGenres
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.URL
 import java.util.*
-import javax.net.ssl.HttpsURLConnection
 
 class TMDBMovieLoader : RetrofitMovieLoader {
     companion object {

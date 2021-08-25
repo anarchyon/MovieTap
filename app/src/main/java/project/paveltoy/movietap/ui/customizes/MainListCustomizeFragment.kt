@@ -7,14 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.GridLayout
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import project.paveltoy.movietap.R
-import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.databinding.FragmentMainListCustomizeBinding
 import project.paveltoy.movietap.ui.MainViewModel
 

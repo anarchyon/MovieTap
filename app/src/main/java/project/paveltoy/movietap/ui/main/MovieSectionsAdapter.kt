@@ -2,7 +2,6 @@ package project.paveltoy.movietap.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import project.paveltoy.movietap.data.entity.MovieEntity
