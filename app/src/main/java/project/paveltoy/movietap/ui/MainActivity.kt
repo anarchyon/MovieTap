@@ -97,12 +97,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            run {
-                if (destination.id == R.id.detail_fragment) {
-                    binding.bottomNavigation.visibility = View.GONE
-                } else {
-                    binding.bottomNavigation.visibility = View.VISIBLE
-                }
+            if (destination.id == R.id.detail_fragment) {
+                binding.bottomNavigation.visibility = View.GONE
+            } else {
+                binding.bottomNavigation.visibility = View.VISIBLE
             }
         }
     }
@@ -191,7 +189,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun openMaps() {
-//        navController.navigate(R.id.action_to_maps_fragment)
+        navController.navigate(R.id.action_to_map_fragment)
     }
 
     private fun requestLocationPermission() {
