@@ -3,16 +3,14 @@ package project.paveltoy.movietap.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
-import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieBinding
 
-class MovieAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
+class MovieAdapter : RecyclerView.Adapter<MovieAdapter.BaseViewHolder>() {
     var data: List<MovieEntity> = ArrayList()
+    lateinit var onItemClick: (movie: MovieEntity) -> Unit
+    lateinit var onFavoriteChanged: (movie: MovieEntity) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemMovieBinding =
@@ -31,26 +29,25 @@ class MovieAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity
 
         fun bind(movie: MovieEntity) {
             bindMovie(movie)
-            setListener(movie)
+            setListeners(movie)
         }
 
         private fun bindMovie(movie: MovieEntity) {
-            itemMovieBinding.movieNameTextView.text = movie.name
-            itemMovieBinding.movieYearTextView.text = movie.movieYear.toString()
-            itemMovieBinding.movieRateTextView.text = movie.rate
-            itemMovieBinding.movieImageView.setImageURI(movie.imageUrl)
-            itemMovieBinding.movieFavoriteToggleButton.isChecked = movie.isFavorite
+            itemMovieBinding.apply {
+                movieNameTextView.text = movie.name
+                movieYearTextView.text = movie.movieYear.toString()
+                movieRateTextView.text = movie.rate
+                movieImageView.setImageURI(movie.imageUrl)
+                movieFavoriteToggleButton.isChecked = movie.isFavorite
+            }
         }
 
-        private fun setListener(movie: MovieEntity) {
+        private fun setListeners(movie: MovieEntity) {
             itemView.setOnClickListener {
-                clickedMovieLiveData.value = movie
-                itemView.findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
+                onItemClick(movie)
             }
             itemMovieBinding.movieFavoriteToggleButton.setOnClickListener {
-                Snackbar.make(itemView.rootView, movie.isFavorite.toString(), BaseTransientBottomBar.LENGTH_LONG)
-                    .setAnchorView(R.id.bottom_navigation)
-                    .show()
+                onFavoriteChanged(movie)
             }
         }
 

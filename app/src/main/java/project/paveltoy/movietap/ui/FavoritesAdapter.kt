@@ -5,13 +5,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.MovieEntity
+import project.paveltoy.movietap.data.getTextForIsFavoriteSnackbar
 import project.paveltoy.movietap.databinding.ItemFavoriteMovieBinding
 
-class FavoritesAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) :
-    RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>() {
+class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.BaseViewHolder>() {
     var data: List<MovieEntity> = ArrayList()
+    lateinit var onItemClick: (movie: MovieEntity) -> Unit
+    lateinit var onFavoriteChanged: (movie: MovieEntity, index: Int) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemFavoriteMovieBinding =
@@ -35,21 +39,22 @@ class FavoritesAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEn
 
         private fun setListeners(movie: MovieEntity) {
             itemView.setOnClickListener {
-                clickedMovieLiveData.value = movie
-                itemView.findNavController().navigate(R.id.action_favorite_movie_fragment_to_detailFragment)
+                onItemClick(movie)
             }
             itemFavoriteMovieBinding.movieFavoriteToggleButton.setOnClickListener {
-
+                onFavoriteChanged(movie, data.indexOf(movie))
             }
         }
 
         private fun bindMovie(movie: MovieEntity) {
-            itemFavoriteMovieBinding.movieImageView.setImageURI(movie.imageUrl)
-            itemFavoriteMovieBinding.movieNameTextView.text = movie.name
-            itemFavoriteMovieBinding.movieYearTextView.text = movie.movieYear.toString()
-            itemFavoriteMovieBinding.movieGenresTextView.text = movie.movieGenre.toString()
-            itemFavoriteMovieBinding.movieRateTextView.text = movie.rate
-            itemFavoriteMovieBinding.movieFavoriteToggleButton.isChecked = movie.isFavorite
+            itemFavoriteMovieBinding.apply {
+                movieImageView.setImageURI(movie.imageUrl)
+                movieNameTextView.text = movie.name
+                movieYearTextView.text = movie.movieYear.toString()
+                movieGenresTextView.text = movie.movieGenre.toString()
+                movieRateTextView.text = movie.rate
+                movieFavoriteToggleButton.isChecked = movie.isFavorite
+            }
         }
 
     }

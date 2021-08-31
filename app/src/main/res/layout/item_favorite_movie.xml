@@ -14,7 +14,7 @@
             android:layout_height="@dimen/movie_image_container_height"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/ic_movie_miss_image"/>
+            android:src="@drawable/ic_movie_miss_image_2"/>
         <androidx.appcompat.widget.AppCompatToggleButton
             android:id="@+id/movie_favorite_toggle_button"
             android:layout_width="@dimen/favorite_star_size"

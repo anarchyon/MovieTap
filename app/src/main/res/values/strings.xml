@@ -22,4 +22,7 @@
     <string name="state_other">Фильмы</string>
     <string name="description_title">Описание фильма</string>
     <string name="customize_list_text_view">Выберите разделы для отображения</string>
+    <string name="movie_not_favorite">удален из любимых</string>
+    <string name="movie_favorite">добавлен в любимые</string>
+    <string name="movie">Фильм</string>
 </resources>

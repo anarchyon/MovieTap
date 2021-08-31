@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import project.paveltoy.movietap.data.MovieEntity
 import project.paveltoy.movietap.databinding.ItemMovieSectionBinding
 
-class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEntity>) :
-    RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
+class VerticalAdapter : RecyclerView.Adapter<VerticalAdapter.BaseViewHolder>() {
     var data: Map<Int, List<MovieEntity>> = HashMap()
     lateinit var movieAdapter: MovieAdapter
+    lateinit var onItemClick: (movie: MovieEntity) -> Unit
+    lateinit var onFavoriteChanged: (movie: MovieEntity) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val itemMovieSectionBinding =
@@ -32,18 +33,28 @@ class VerticalAdapter(private val clickedMovieLiveData: MutableLiveData<MovieEnt
         private lateinit var innerRecyclerView: RecyclerView
 
         init {
-            movieAdapter = MovieAdapter(clickedMovieLiveData)
+            movieAdapter = MovieAdapter()
         }
 
         fun bind(key: Int) {
             itemMovieSectionBinding.sectionTitleTextView.text = itemView.context.getString(key)
+            setRecyclerView()
+            setAdapter(key)
+        }
+
+        private fun setRecyclerView() {
             innerRecyclerView = itemMovieSectionBinding.innerRecyclerView
             innerRecyclerView.layoutManager =
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             innerRecyclerView.adapter = movieAdapter
             innerRecyclerView.isNestedScrollingEnabled = false
+        }
+
+        private fun setAdapter(key: Int) {
             movieAdapter.data = this@VerticalAdapter.data[key]!!
             movieAdapter.notifyDataSetChanged()
+            movieAdapter.onItemClick = onItemClick
+            movieAdapter.onFavoriteChanged = onFavoriteChanged
         }
     }
 }

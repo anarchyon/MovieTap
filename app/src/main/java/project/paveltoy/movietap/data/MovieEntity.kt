@@ -9,7 +9,7 @@ data class MovieEntity(
     val description: String,
     val rate: String,
     val imageUrl: Uri?,
-    val isFavorite: Boolean,
+    var isFavorite: Boolean,
     val movieYear: Int,
     val movieGenre: Int,
     val movieState: Int,
