@@ -20,7 +20,7 @@ import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.entity.Section
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
-import project.paveltoy.movietap.service.MovieChangesService
+//import project.paveltoy.movietap.service.MovieChangesService
 import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 private const val PREFERENCES_TAG = "movie_list_preferences"
@@ -33,20 +33,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferences: SharedPreferences
     private lateinit var navController: NavController
-    private val changesMovieReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            val response = p1?.getStringExtra(MovieChangesService.ACTION_TAG)
-            processChangesMovieIntent(response)
-        }
-    }
     lateinit var mainViewModel: MainViewModel
-
-    private fun processChangesMovieIntent(response: String?) {
-        Snackbar.make(
-            binding.fragmentContainerMain,
-            R.string.changes_movie_found, Snackbar.LENGTH_LONG
-        ).setAnchorView(binding.bottomNavigation).show()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,9 +51,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             mainViewModel.getMovies()
         }
         preferences = getSharedPreferences(PREFERENCES_TAG, MODE_PRIVATE)
-
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(changesMovieReceiver, IntentFilter(MovieChangesService.ACTION))
 
         checkInternetPermission()
     }
@@ -86,8 +70,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         fillTMDBSections()
         mainViewModel.setMainSections()
         mainViewModel.getGenres()
-//        val intent = Intent(this, MovieChangesService::class.java)
-//        startService(intent)
     }
 
     private fun setNavigation() {
@@ -200,7 +182,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     override fun onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(changesMovieReceiver)
         super.onDestroy()
     }
 }
