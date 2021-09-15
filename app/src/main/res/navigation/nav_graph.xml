@@ -13,7 +13,10 @@
         app:destination="@id/main_list_customize_fragment" />
     <action
         android:id="@+id/action_to_contacts_fragment"
-        app:destination="@id/contactsShow" />
+        app:destination="@id/contacts_show" />
+    <action
+        android:id="@+id/action_to_map_fragment"
+        app:destination="@id/map_fragment" />
     <fragment
         android:id="@+id/favorite_movie_fragment"
         android:name="project.paveltoy.movietap.ui.favorites.FavoriteMovieFragment"
@@ -25,7 +28,7 @@
     <fragment
         android:id="@+id/main_list_customize_fragment"
         android:name="project.paveltoy.movietap.ui.customizes.MainListCustomizeFragment"
-        android:label="MainListCustomizeFragment"/>
+        android:label="MainListCustomizeFragment" />
     <fragment
         android:id="@+id/main_fragment"
         android:name="project.paveltoy.movietap.ui.main.MainFragment"
@@ -39,7 +42,11 @@
         android:name="project.paveltoy.movietap.ui.details.DetailFragment"
         android:label="DetailFragment" />
     <fragment
-        android:id="@+id/contactsShow"
+        android:id="@+id/contacts_show"
         android:name="project.paveltoy.movietap.ui.contacts.ContactsShow"
         android:label="ContactsShow" />
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="project.paveltoy.movietap.ui.map.MapFragment"
+        android:label="MapFragment" />
 </navigation>

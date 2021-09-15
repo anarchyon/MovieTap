@@ -8,7 +8,6 @@ import android.database.Cursor
 import android.net.Uri
 import project.paveltoy.app.App
 import project.paveltoy.movietap.R
-import project.paveltoy.movietap.data.repository.local.FavoriteDao
 
 private const val TABLE_NAME = "FavoriteMovies"
 private const val URI_CODE = 1

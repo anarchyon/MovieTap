@@ -7,4 +7,10 @@
         android:icon="@android:drawable/ic_menu_call"
         android:title="@string/read_contacts" />
 
+    <item
+        android:id="@+id/maps"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="@string/maps" />
+
 </menu>

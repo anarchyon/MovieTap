@@ -1,12 +1,10 @@
 package project.paveltoy.movietap.data.loader
 
-import project.paveltoy.movietap.BuildConfig
 import project.paveltoy.movietap.data.entity.MovieGenres
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import retrofit2.http.QueryMap
 
 const val GET_MOVIES = "movie/{section}"
 const val GET_MOVIES_BY_GENRE = "discover/movie"

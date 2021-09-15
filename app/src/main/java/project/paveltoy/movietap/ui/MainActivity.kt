@@ -8,12 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
@@ -22,32 +20,20 @@ import project.paveltoy.movietap.R
 import project.paveltoy.movietap.data.entity.Section
 import project.paveltoy.movietap.data.entity.TMDBSections
 import project.paveltoy.movietap.databinding.ActivityMainBinding
-import project.paveltoy.movietap.service.MovieChangesService
+//import project.paveltoy.movietap.service.MovieChangesService
 import project.paveltoy.movietap.ui.customizes.SectionsForDisplay
 
 private const val PREFERENCES_TAG = "movie_list_preferences"
 private const val MOVIE_LIST_KEY = "movie_list_key"
 private const val PERMISSION_REQUEST_INTERNET = 1
+private const val PERMISSION_REQUEST_LOCATION = 2
 
 class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferences: SharedPreferences
     private lateinit var navController: NavController
-    private val changesMovieReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            val response = p1?.getStringExtra(MovieChangesService.ACTION_TAG)
-            processChangesMovieIntent(response)
-        }
-    }
     lateinit var mainViewModel: MainViewModel
-
-    private fun processChangesMovieIntent(response: String?) {
-        Snackbar.make(
-            binding.fragmentContainerMain,
-            R.string.changes_movie_found, Snackbar.LENGTH_LONG
-        ).setAnchorView(binding.bottomNavigation).show()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,9 +51,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             mainViewModel.getMovies()
         }
         preferences = getSharedPreferences(PREFERENCES_TAG, MODE_PRIVATE)
-
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(changesMovieReceiver, IntentFilter(MovieChangesService.ACTION))
 
         checkInternetPermission()
     }
@@ -87,8 +70,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         fillTMDBSections()
         mainViewModel.setMainSections()
         mainViewModel.getGenres()
-//        val intent = Intent(this, MovieChangesService::class.java)
-//        startService(intent)
     }
 
     private fun setNavigation() {
@@ -98,22 +79,20 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            run {
-                if (destination.id == R.id.detail_fragment) {
-                    binding.bottomNavigation.visibility = View.GONE
-                } else {
-                    binding.bottomNavigation.visibility = View.VISIBLE
-                }
+            if (destination.id == R.id.detail_fragment) {
+                binding.bottomNavigation.visibility = View.GONE
+            } else {
+                binding.bottomNavigation.visibility = View.VISIBLE
             }
         }
     }
 
     private fun requestInternetPermission() {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.INTERNET
-                ), PERMISSION_REQUEST_INTERNET
-            )
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.INTERNET
+            ), PERMISSION_REQUEST_INTERNET
+        )
     }
 
     private fun loadPreferences() {
@@ -147,8 +126,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_INTERNET) {
-            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLoadData()
+            }
+        }
+        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openMaps()
             }
         }
     }
@@ -163,17 +147,41 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.contacts -> {
                 navController.navigate(R.id.action_to_contacts_fragment)
                 true
             }
-            else -> {false}
+            R.id.maps -> {
+                checkLocationPermission()
+                true
+            }
+            else -> {
+                false
+            }
         }
     }
 
+    private fun checkLocationPermission() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            openMaps()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun openMaps() {
+        navController.navigate(R.id.action_to_map_fragment)
+    }
+
+    private fun requestLocationPermission() {
+        requestPermissions(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            PERMISSION_REQUEST_LOCATION
+        )
+    }
+
     override fun onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(changesMovieReceiver)
         super.onDestroy()
     }
 }
